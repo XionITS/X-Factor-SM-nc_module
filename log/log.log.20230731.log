@@ -1,0 +1,48 @@
+WARNING, 2023-07-31 10:25:30,623, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:25:30,626, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:26:45,457, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:26:45,458, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:27:02,749, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:27:02,749, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:27:30,935, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:27:30,936, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:27:47,963, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:27:47,970, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:28:33,411, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:28:33,411, Error : name 'c' is not defined
+WARNING, 2023-07-31 10:28:43,258, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:28:43,304, Error : list indices must be integers or slices, not list
+WARNING, 2023-07-31 10:29:38,747, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:29:38,747, Error : list indices must be integers or slices, not list
+WARNING, 2023-07-31 10:30:03,621, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:30:03,622, Error : list indices must be integers or slices, not list
+WARNING, 2023-07-31 10:30:17,124, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:30:17,124, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:30:38,934, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:30:38,934, Error : list indices must be integers or slices, not list
+WARNING, 2023-07-31 10:30:45,192, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:30:45,192, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:31:32,651, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:31:32,651, Error : name 'i' is not defined
+WARNING, 2023-07-31 10:32:02,463, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:32:02,464, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:32:26,788, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:32:26,789, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:32:35,320, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:32:35,320, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:32:44,544, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:32:44,544, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:32:51,408, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:32:51,408, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:33:08,283, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:33:08,283, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:33:51,108, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:33:51,109, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:34:00,118, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:34:00,119, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:34:05,656, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:34:05,656, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:34:43,327, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:34:43,327, Error : list indices must be integers or slices, not str
+WARNING, 2023-07-31 10:40:43,154, Preprocessing_Dashboard.py - Error 발생
+WARNING, 2023-07-31 10:40:43,154, Error : 'int' object is not iterable
