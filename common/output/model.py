@@ -41,8 +41,8 @@ def plug_in(data):
                 'hw_list': str(hw_list).replace('"','').replace(",","<br>").replace('\'','').replace('[','').replace(']',''),
                 'sw_list': str(sw_list).replace('"','').replace('!','<br>').replace('\'','').replace('[','').replace(']','').replace(', ',''),
                 'sw_ver_list': str(sw_ver_list).replace("!","<br>").replace('\'','').replace('[','').replace(']','').replace(', ',''),
-                'hotfix': hot_list,
-                'hotfix_date': hotdate_list
+                'hotfix': str(hot_list).replace("''", '').replace("' ", '').replace("'", '').replace(",", "<br>").replace('[', '').replace(']', ''),
+                'hotfix_date': str(hotdate_list).replace("''", '').replace("' ", '').replace("'", '').replace(",", "<br>").replace('[', '').replace(']', '')
             }
             xfactor_user, created = XFactor_User.objects.update_or_create(computer_id=computer_id, defaults=defaults)
             xfactor_user_log = XFactor_User_log.objects.create(computer_id=computer_id, **defaults)
