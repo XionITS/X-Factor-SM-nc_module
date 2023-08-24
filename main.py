@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from common.core.Dashboard import daily_plug_in as CTDPI
+from common.core.Dashboard import minutely_plug_in as CTMPI
 from common.etc.thread import count as count
 import urllib3
 import threading
@@ -15,28 +16,33 @@ run_main = True
 MinuitTime = 0
 result_list = []
 
+def minutely() :
+    try:
+        now = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        print('\rminutely', end ="")
+        print(now)
+        CTMPI()
+        logger.info('Minutely CMU Module Succesed!!')
+    except Exception as e:
+        logger.warning('Minutely CMU Module Fail' +str(e))
+
 
 def daily():
     try:
-        count = 0
-        if CDU == 'true' :
-            now = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-            print('\rdaily', end ="")
-            print(now)
-            CTDPI()
-            logger.info('Daily CDU common Succeeded!')
-        else:
-            logger.info('Tanium Daily cycle 사용여부  : ' + CDU)
+        now = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        print('\rdaily', end ="")
+        print(now)
+        CTDPI()
+        logger.info('Daily CDU common Succeeded!')
     except Exception as e:
         logger.warning('Daily CDU common Fail' +str(e))
-        if count == 0:
-            daily()
+        daily()
 
 def main():
     try :
-        CTDPI()
-        logger.info('Tanium Daily common 성공')
-        print('Tanium Daily common 성공')
+        CTMPI()
+        logger.info('Tanium Minutely common 성공')
+        print('Tanium Minutely common 성공')
 
     except Exception as e :
         print()
@@ -52,16 +58,18 @@ def main():
         #     else :
         #         print(str(e))
 
-    #print("스케쥴링을 시작하겠습니다.")
+    print("스케쥴링을 시작하겠습니다.")
 
     for i in reversed(range(3)) :
         print("...........{}".format(i + 1), end="\r")
         time.sleep(1)
-    CDTH="13"
-    CDTM="20"
+
+    CDTH="15"
+    CDTM="31"
     thread.start()
     sched = BlockingScheduler(timezone='Asia/Seoul')
     #sched.add_job(minutely, 'interval', seconds=CMT)
+    sched.add_job(minutely, 'cron', minute='*/5', second='10', misfire_grace_time=None)  # seconds='3'
     sched.add_job(daily, 'cron', hour=CDTH, minute=CDTM, misfire_grace_time=None)
     logger.info('Start the Scheduling~')
     sched.start()
