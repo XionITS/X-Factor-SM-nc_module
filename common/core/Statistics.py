@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 
 #구분데이터 통계
-def Minutely() :
+def Minutely_statistics() :
     #chassis_type 섀시타입
     user = Xfactor_Common.objects.all()
     users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('chassistype').annotate(count=Count('chassistype'))

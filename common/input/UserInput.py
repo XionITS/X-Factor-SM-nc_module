@@ -12,11 +12,18 @@ CSP = SETTING['CORE']['Tanium']['INPUT']['API']['PATH']['Sensor']
 PROGRESS = SETTING['PROJECT']['PROGRESSBAR'].lower()
 
 
-def plug_in():
+def plug_in(type):
     logger = logging.getLogger(__name__)
     try:
         SK = session()
-        CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['COMMON']
+        if type == 'common':
+            CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['COMMON']
+        elif type == 'service':
+            CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['SERVICE']
+        elif type == 'purchase':
+            CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['PURCHASE']
+        elif type == 'security':
+            CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['SECURITY']
         CSH = {'session': SK}
         CSU = APIURL + CSP + CSID
         CSR = requests.post(CSU, headers=CSH, verify=False)
@@ -33,7 +40,6 @@ def plug_in():
             dataList.append(DL)
         logger.info('Tanium API Sensor 호출 성공')
         logger.info('Sensor ID : ' + str(CSID))
-
         #print(dataList)
         return dataList
     except:
