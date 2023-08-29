@@ -64,8 +64,8 @@ def main():
         print("...........{}".format(i + 1), end="\r")
         time.sleep(1)
 
-    CDTH="15"
-    CDTM="31"
+    CDTH="13"
+    CDTM="20"
     thread.start()
     sched = BlockingScheduler(timezone='Asia/Seoul')
     #sched.add_job(minutely, 'interval', seconds=CMT)

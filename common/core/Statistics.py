@@ -51,7 +51,23 @@ def Minutely_statistics() :
             defaults={'item_count': item_count}
         )
         daily_statistics.save()
+
+    #subnet 대역별
+    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('subnet').annotate(count=Count('subnet'))
+    for user_data in users:
+        classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['subnet']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
     print("Minutely Statistics Success")
+
+
 
 def Daily() :
     #print("daily start")
@@ -94,4 +110,18 @@ def Daily() :
             item_count=item_count
         )
         daily_statistics_log.save()
+
+    #subnet 대역별
+    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('subnet').annotate(count=Count('subnet'))
+    for user_data in users:
+        classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['subnet']
+        item_count = user_data['count']
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
+
     print("daily Statistics Success")

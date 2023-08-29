@@ -45,7 +45,7 @@
           "username": "administrator",
           "password": "xion123!",
           "SensorID": {
-            "COMMON" : "1189",
+            "COMMON" : "1330",
             "IDLE" : "597",
             "VUL" : "4356",
             "DISCOVER" : "2",

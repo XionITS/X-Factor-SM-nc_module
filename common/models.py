@@ -25,6 +25,7 @@ class Xfactor_Common(models.Model):
     last_network = models.TextField(null=True)
     hotfix = models.TextField(null=True)
     hotfix_date = models.TextField(null=True)
+    subnet = models.TextField(null=True)
     memo = models.TextField(null=True)
     user_date = models.DateTimeField(auto_now_add=True)
 
@@ -52,6 +53,7 @@ class Xfactor_Common_log(models.Model):
     last_network = models.TextField(null=True)
     hotfix = models.TextField(null=True)
     hotfix_date = models.TextField(null=True)
+    subnet = models.TextField(null=True)
     memo = models.TextField(null=True)
     user_date = models.DateTimeField(auto_now_add=True)
 
