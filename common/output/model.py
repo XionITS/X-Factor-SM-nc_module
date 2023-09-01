@@ -11,6 +11,10 @@ from datetime import datetime, timedelta
 def plug_in(data, time):
     try:
         #print(data)
+        Xfactor_Service.objects.all().delete()
+        Xfactor_Purchase.objects.all().delete()
+        Xfactor_Security.objects.all().delete()
+        Xfactor_Common.objects.all().delete()
         proc_data = PROC(data)
         for d in proc_data:
             #hw_list = []
@@ -66,7 +70,7 @@ def plug_in(data, time):
                 'user_date' : now
             }
             if time == 'minutely' :
-                xfactor_common, created = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
+                xfactor_common = Xfactor_Common.objects.create(computer_id=computer_id, **defaults)
                 xfactor_common.save()
             else :
                 xfactor_common_log = Xfactor_Common_log.objects.create(computer_id=computer_id, **defaults)
@@ -101,7 +105,9 @@ def plug_in_service(data, time):
         proc_data = PROC(data)
         for d in proc_data:
             computer_id = d[0][0]['text']
-            common_id = Xfactor_Common.objects.get(computer_id=computer_id)
+            common_id = Xfactor_Common.objects.filter(computer_id=computer_id).first()
+            if common_id is None:
+                continue  # 다음 for문으로 넘어감
             defaults = {
                 'essential1': d[1][0]['text'],
                 'essential2': d[2][0]['text'],
@@ -113,7 +119,7 @@ def plug_in_service(data, time):
             }
             if time == 'minutely':
                 # xfactor_service, created = Xfactor_Service.objects.update_or_create(computer=computer_id, defaults=defaults)
-                xfactor_service, created = Xfactor_Service.objects.update_or_create(computer=common_id, defaults=defaults)
+                xfactor_service = Xfactor_Service.objects.create(computer=common_id, **defaults)
                 xfactor_service.save()
             else:
                 # xfactor_service_log = Xfactor_Service_log.objects.create(computer=computer_id, **defaults)
@@ -137,7 +143,9 @@ def plug_in_purchase(data, time):
         proc_data = PROC(data)
         for d in proc_data:
             computer_id = d[0][0]['text']
-            common_id = Xfactor_Common.objects.get(computer_id=computer_id)
+            common_id = Xfactor_Common.objects.filter(computer_id=computer_id).first()
+            if common_id is None:
+                continue  # 다음 for문으로 넘어감
             defaults = {
                 'mem_use': d[1][0]['text'],
                 'disk_use': d[2][0]['text'],
@@ -145,7 +153,7 @@ def plug_in_purchase(data, time):
             }
             if time == 'minutely':
                 # xfactor_purchase, created = Xfactor_Purchase.objects.update_or_create(computer=computer_id, defaults=defaults)
-                xfactor_purchase, created = Xfactor_Purchase.objects.update_or_create(computer=common_id, defaults=defaults)
+                xfactor_purchase = Xfactor_Purchase.objects.create(computer=common_id, **defaults)
                 xfactor_purchase.save()
             else:
                 # xfactor_purchase_log = Xfactor_Purchase_log.objects.create(computer=computer_id, **defaults)
@@ -169,7 +177,9 @@ def plug_in_security(data, time):
         proc_data = PROC(data)
         for d in proc_data:
             computer_id = d[0][0]['text']
-            common_id = Xfactor_Common.objects.get(computer_id=computer_id)
+            common_id = Xfactor_Common.objects.filter(computer_id=computer_id).first()
+            if common_id is None:
+                continue  # 다음 for문으로 넘어감
             defaults = {
                 'security1': d[1][0]['text'],
                 'security1_ver': d[2][0]['text'],
@@ -195,7 +205,7 @@ def plug_in_security(data, time):
             }
             if time == 'minutely':
                 # xfactor_security, created = Xfactor_Security.objects.update_or_create(computer=computer_id, defaults=defaults)
-                xfactor_security, created = Xfactor_Security.objects.update_or_create(computer=common_id, defaults=defaults)
+                xfactor_security = Xfactor_Security.objects.create(computer=common_id, **defaults)
                 xfactor_security.save()
             else:
                 # xfactor_security_log = Xfactor_Security_log.objects.create(computer=computer_id, **defaults)

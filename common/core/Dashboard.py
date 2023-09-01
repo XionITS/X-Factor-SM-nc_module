@@ -6,7 +6,7 @@ from common.output.model import plug_in as user_db
 from common.output.model import plug_in_service as service_db
 from common.output.model import plug_in_purchase as purchase_db
 from common.output.model import plug_in_security as security_db
-from common.core.Statistics import Minutely_statistics, Daily
+from common.core.Statistics import Minutely_statistics, Daily_statistics
 # from common.core.Statistics import chassis_type as chassis_input
 # from common.core.Statistics import os_type as os_input
 # from common.core.Statistics import win_ver as win_ver_input
@@ -37,6 +37,6 @@ def minutely_plug_in():
 def daily_plug_in():
     # user_asset = userinput()
     # user_input = user_db(user_asset, 'daily')
-    Daily()
+    Daily_statistics()
 
 

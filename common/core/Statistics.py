@@ -13,8 +13,9 @@ from datetime import datetime, timedelta
 #구분데이터 통계
 def Minutely_statistics() :
     #chassis_type 섀시타입
-    user = Xfactor_Common.objects.all()
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('chassistype').annotate(count=Count('chassistype'))
+    Daily_Statistics.objects.all().delete()
+    user = Xfactor_Common.objects.exclude(computer_id='unconfirmed')
+    users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['chassistype']
@@ -27,7 +28,7 @@ def Minutely_statistics() :
         daily_statistics.save()
 
     #os_type OS종류
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('os_simple').annotate(count=Count('os_simple'))
+    users = user.values('os_simple').annotate(count=Count('os_simple'))
     for user_data in users:
         classification = 'os_simple'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['os_simple']
@@ -40,7 +41,7 @@ def Minutely_statistics() :
         daily_statistics.save()
 
     #win_ver 윈도우버전
-    users = user.filter(Q(os_simple='Windows')).exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('os_total').annotate(count=Count('os_total'))
+    users = user.filter(Q(os_simple='Windows')).values('os_total').annotate(count=Count('os_total'))
     for user_data in users:
         classification = 'win_os_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['os_total']
@@ -53,7 +54,7 @@ def Minutely_statistics() :
         daily_statistics.save()
 
     #subnet 대역별
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('subnet').annotate(count=Count('subnet'))
+    users = user.values('subnet').annotate(count=Count('subnet'))
     for user_data in users:
         classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['subnet']
@@ -69,11 +70,11 @@ def Minutely_statistics() :
 
 
 
-def Daily() :
+def Daily_statistics() :
     #print("daily start")
     #chassis_type 섀시타입
-    user = Xfactor_Common_log.objects.all()
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('chassistype').annotate(count=Count('chassistype'))
+    user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed')
+    users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['chassistype']
@@ -86,7 +87,7 @@ def Daily() :
         daily_statistics_log.save()
 
     #os_type OS종류
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('os_simple').annotate(count=Count('os_simple'))
+    users = user.values('os_simple').annotate(count=Count('os_simple'))
     for user_data in users:
         classification = 'os_simple'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['os_simple']
@@ -99,7 +100,7 @@ def Daily() :
         daily_statistics_log.save()
 
     #win_ver 윈도우버전
-    users = user.filter(Q(os_simple='Windows')).exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('os_total').annotate(count=Count('os_total'))
+    users = user.filter(Q(os_simple='Windows')).values('os_total').annotate(count=Count('os_total'))
     for user_data in users:
         classification = 'win_os_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['os_total']
@@ -112,7 +113,7 @@ def Daily() :
         daily_statistics_log.save()
 
     #subnet 대역별
-    users = user.exclude(os_total='unconfirmed').exclude(ip_address='unconfirmed').values('subnet').annotate(count=Count('subnet'))
+    users = user.values('subnet').annotate(count=Count('subnet'))
     for user_data in users:
         classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['subnet']
