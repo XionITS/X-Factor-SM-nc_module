@@ -176,10 +176,26 @@ def plug_in_security(data, time):
 
         proc_data = PROC(data)
         for d in proc_data:
+            chr_list = []
+            chr_ver_list = []
+            edg_list = []
+            edg_ver_list = []
+            fir_list = []
+            fir_ver_list = []
             computer_id = d[0][0]['text']
             common_id = Xfactor_Common.objects.filter(computer_id=computer_id).first()
             if common_id is None:
                 continue  # 다음 for문으로 넘어감
+
+            for c in range(len(d[15])):
+                chr_list.append(d[15][c]['text'])
+                chr_ver_list.append(d[16][c]['text'])
+            for e in range(len(d[17])):
+                edg_list.append(d[17][e]['text'])
+                edg_ver_list.append(d[18][e]['text'])
+            for f in range(len(d[19])):
+                fir_list.append(d[19][f]['text'])
+                fir_ver_list.append(d[20][f]['text'])
             defaults = {
                 'security1': d[1][0]['text'],
                 'security1_ver': d[2][0]['text'],
@@ -195,12 +211,12 @@ def plug_in_security(data, time):
                 'multi_boot': d[12][0]['text'],
                 'first_network': d[13][0]['text'],
                 'last_boot': d[14][0]['text'],
-                'ext_chr': d[15][0]['text'],
-                'ext_chr_ver': d[16][0]['text'],
-                'ext_edg': d[17][0]['text'],
-                'ext_edg_ver': d[18][0]['text'],
-                'ext_fir': d[19][0]['text'],
-                'ext_fir_ver': d[20][0]['text'],
+                'ext_chr': str(chr_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_chr_ver': str(chr_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_edg': str(edg_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_edg_ver': str(edg_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_fir': str(fir_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_fir_ver': str(fir_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'user_date': now
             }
             if time == 'minutely':
