@@ -30,13 +30,22 @@ def minutely_plug_in():
     pruchase_input = purchase_db(purchase_asset, 'minutely')
     security_asset = userinput('security')
     security_input = security_db(security_asset, 'minutely')
-    # print(security_asset)
+    # # print(security_asset)
     Minutely_statistics()
 
 
 def daily_plug_in():
+    # user_asset = userinput('common')
+    # user_input = user_db(user_asset, 'daily')
+    # service_asset = userinput('service')
+    # service_input = service_db(service_asset, 'daily')
+    print("되니?")
+    # purchase_asset = userinput('purchase')
+    # pruchase_input = purchase_db(purchase_asset, 'daily')
+    # security_asset = userinput('security')
+    # security_input = security_db(security_asset, 'daily')
     # user_asset = userinput()
     # user_input = user_db(user_asset, 'daily')
-    Daily_statistics()
+    #Daily_statistics()
 
 

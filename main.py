@@ -41,6 +41,7 @@ def daily():
 def main():
     try :
         CTMPI()
+        #CTDPI()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')
 
@@ -64,13 +65,13 @@ def main():
         print("...........{}".format(i + 1), end="\r")
         time.sleep(1)
 
-    CDTH="13"
-    CDTM="20"
+    CDTH="17"
+    CDTM="40"
     thread.start()
     sched = BlockingScheduler(timezone='Asia/Seoul')
     #sched.add_job(minutely, 'interval', seconds=CMT)
     sched.add_job(minutely, 'cron', minute='*/5', second='10', misfire_grace_time=None)  # seconds='3'
-    sched.add_job(daily, 'cron', hour=CDTH, minute=CDTM, misfire_grace_time=None)
+    #sched.add_job(daily, 'cron', hour=CDTH, minute=CDTM, misfire_grace_time=None)
     logger.info('Start the Scheduling~')
     sched.start()
 

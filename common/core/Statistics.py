@@ -5,7 +5,7 @@
 # django.setup()
 from ..models import *
 from django.db.models import Count, Q
-
+import pytz
 import time
 from datetime import datetime, timedelta
 
@@ -13,8 +13,13 @@ from datetime import datetime, timedelta
 #구분데이터 통계
 def Minutely_statistics() :
     #chassis_type 섀시타입
-    Daily_Statistics.objects.all().delete()
-    user = Xfactor_Common.objects.exclude(computer_id='unconfirmed')
+    #Daily_Statistics.objects.all().delete()
+
+    local_tz = pytz.timezone('Asia/Seoul')
+    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    now = utc_now.astimezone(local_tz)
+    time = now - timedelta(minutes=7)
+    user = Xfactor_Common.objects.exclude(computer_id='unconfirmed').filter(user_date__gte=time)
     users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -73,7 +78,10 @@ def Minutely_statistics() :
 def Daily_statistics() :
     #print("daily start")
     #chassis_type 섀시타입
-    user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed')
+    local_tz = pytz.timezone('Asia/Seoul')
+    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    now = utc_now.astimezone(local_tz)
+    user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
     users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
