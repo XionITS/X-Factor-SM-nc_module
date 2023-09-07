@@ -23,3 +23,4 @@ def plug_in(data):
     except Exception as e:
         logger.warning('Preprocessing_Dashboard.py - Error 발생')
         logger.warning('Error : ' + str(e))
+
