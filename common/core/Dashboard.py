@@ -2,7 +2,8 @@ import urllib3
 import json
 
 from common.input.UserInput import plug_in as userinput
-from common.output.model import plug_in as user_db
+from common.output.model import plug_in_minutely as user_db
+from common.output.model import plug_in_daily as daily_db
 from common.output.model import plug_in_service as service_db
 from common.output.model import plug_in_purchase as purchase_db
 from common.output.model import plug_in_security as security_db
@@ -23,29 +24,20 @@ with open("setting.json", encoding="UTF-8") as f:
 
 def minutely_plug_in():
     user_asset = userinput('common')
-    user_input = user_db(user_asset, 'minutely')
+    user_input = user_db(user_asset)
     service_asset = userinput('service')
-    service_input = service_db(service_asset, 'minutely')
+    service_input = service_db(service_asset)
     purchase_asset = userinput('purchase')
-    pruchase_input = purchase_db(purchase_asset, 'minutely')
+    purchase_input = purchase_db(purchase_asset)
     security_asset = userinput('security')
-    security_input = security_db(security_asset, 'minutely')
+    security_input = security_db(security_asset)
     # # print(security_asset)
     Minutely_statistics()
 
 
 def daily_plug_in():
-    # user_asset = userinput('common')
-    # user_input = user_db(user_asset, 'daily')
-    # service_asset = userinput('service')
-    # service_input = service_db(service_asset, 'daily')
-    print("되니?")
-    # purchase_asset = userinput('purchase')
-    # pruchase_input = purchase_db(purchase_asset, 'daily')
-    # security_asset = userinput('security')
-    # security_input = security_db(security_asset, 'daily')
-    # user_asset = userinput()
-    # user_input = user_db(user_asset, 'daily')
-    #Daily_statistics()
+    user_asset = userinput('daily')
+    user_input = daily_db(user_asset)
+    Daily_statistics()
 
 

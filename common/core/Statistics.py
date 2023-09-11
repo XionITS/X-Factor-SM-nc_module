@@ -13,13 +13,14 @@ from datetime import datetime, timedelta
 #구분데이터 통계
 def Minutely_statistics() :
     #chassis_type 섀시타입
-    #Daily_Statistics.objects.all().delete()
+    Daily_Statistics.objects.all().delete()
 
     local_tz = pytz.timezone('Asia/Seoul')
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     now = utc_now.astimezone(local_tz)
     time = now - timedelta(minutes=7)
-    user = Xfactor_Common.objects.exclude(computer_id='unconfirmed').filter(user_date__gte=time)
+    user = Xfactor_Common.objects.filter(user_date__gte=time)
+    #user = Xfactor_Common.objects.exclude(computer_id='unconfirmed').filter(user_date__gte=time)
     users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -34,6 +35,7 @@ def Minutely_statistics() :
 
     #os_type OS종류
     users = user.values('os_simple').annotate(count=Count('os_simple'))
+    #print(users)
     for user_data in users:
         classification = 'os_simple'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['os_simple']
@@ -81,7 +83,12 @@ def Daily_statistics() :
     local_tz = pytz.timezone('Asia/Seoul')
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     now = utc_now.astimezone(local_tz)
-    user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
+    start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_of_today = start_of_today + timedelta(days=1)
+
+    #user = Xfactor_Daily.objects.filter(user_date__date=now.date())
+    user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+    #user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
     users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
         classification = 'chassis_type'  # 분류 정보를 원하시는 텍스트로 변경해주세요.

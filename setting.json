@@ -36,7 +36,7 @@
       },
       "INPUT" : {
         "API" : {
-          "URL": "https://192.168.5.100",
+          "URL": "https://211.38.3.194:4082",
           "PATH": {
             "SessionKey": "/api/v2/session/login",
             "Sensor": "/api/v2/result_data/saved_question/",
@@ -46,21 +46,17 @@
           "password": "xion123!",
           "SensorID": {
             "COMMON" : "1330",
-            "IDLE" : "597",
-            "VUL" : "4356",
-            "DISCOVER" : "2",
-            "CERTIFICATE" : "598",
-            "SBOM" : "666",
             "SERVICE": "1418",
             "SECURITY": "1300",
-            "PURCHASE": "1299"
+            "PURCHASE": "1299",
+            "DAILY" : "1438"
           }
         },
         "DB" : {
           "PS" : {
             "HOST": "localhost",
             "PORT": "5432",
-            "NAME": "postgres",
+            "NAME": "ncsm",
             "USER": "postgres",
             "PWD": "psql",
             "TNM": {

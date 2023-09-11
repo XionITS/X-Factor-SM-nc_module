@@ -24,6 +24,8 @@ def plug_in(type):
             CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['PURCHASE']
         elif type == 'security':
             CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['SECURITY']
+        elif type == 'daily':
+            CSID = SETTING['CORE']['Tanium']['INPUT']['API']['SensorID']['DAILY']
         CSH = {'session': SK}
         CSU = APIURL + CSP + CSID
         CSR = requests.post(CSU, headers=CSH, verify=False)
