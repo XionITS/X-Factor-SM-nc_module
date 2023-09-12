@@ -419,7 +419,7 @@ def Daily_statistics() :
         daily_statistics_log = Daily_Statistics_log(
             classification=classification,
             item=item,
-            defaults={'item_count': item_count}
+            item_count=item_count
         )
         daily_statistics_log.save()
 
@@ -432,7 +432,7 @@ def Daily_statistics() :
         daily_statistics_log = Daily_Statistics_log(
             classification=classification,
             item=item,
-            defaults={'item_count': item_count}
+            item_count=item_count
         )
         daily_statistics_log.save()
 
