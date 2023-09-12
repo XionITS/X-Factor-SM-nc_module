@@ -212,7 +212,7 @@ def Minutely_statistics() :
     # os버전별 자산 현황
     user = Xfactor_Common.objects.filter(user_date__gte=time)
     users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
-    print(users)
+    #print(users)
     for user_data in users:
         classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         if user_data['os_total'] == 'unconfirmed':
@@ -228,7 +228,7 @@ def Minutely_statistics() :
 
     # 업데이트 필요 통계
     users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
-    print(users)
+    #print(users)
     classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
     item = 'new'
     item_count = sum(item['count'] for item in users)
@@ -240,7 +240,7 @@ def Minutely_statistics() :
     daily_statistics.save()
     # 업데이트 필요 통계
     users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
-    print(users)
+    #print(users)
     classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
     item = 'old'
     item_count = sum(item['count'] for item in users)
