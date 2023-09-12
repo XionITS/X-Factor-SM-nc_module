@@ -70,13 +70,12 @@ def main():
     thread.start()
     sched = BlockingScheduler(timezone='Asia/Seoul')
     #실제
-    #sched.add_job(minutely, 'cron', hour='*/1', second='10', misfire_grace_time=None)  # seconds='3'
-    #sched.add_job(daily, 'cron', hour=CDTH, minute=CDTM, misfire_grace_time=None)
+    sched.add_job(minutely, 'cron', minute='*/5', second='10', misfire_grace_time=None)  # seconds='3'
+    sched.add_job(daily, 'cron', minute='*/10', second='10', misfire_grace_time=None)
 
     #test용
-    #sched.add_job(minutely, 'cron', minute='*/5', second='10', misfire_grace_time=None)  # seconds='3'
-    sched.add_job(minutely, 'cron', hour='0-23', minute='30', second='10', misfire_grace_time=None)  # seconds='3'
-    sched.add_job(daily, 'cron', hour='05', minute='0',  second='20' , misfire_grace_time=None)
+    #sched.add_job(minutely, 'cron', hour='0-23', minute='30', second='10', misfire_grace_time=None)  # seconds='3'
+    #sched.add_job(daily, 'cron', hour='05', minute='0',  second='20' , misfire_grace_time=None)
     logger.info('Start the Scheduling~')
     sched.start()
 
