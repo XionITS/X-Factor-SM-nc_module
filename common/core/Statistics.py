@@ -190,6 +190,8 @@ def Minutely_statistics() :
     for user_data in service_user:
         classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['essential5']
+        if item == 'False' or item == 'True' :
+            item = 'unconfirmed'
         item_count = user_data['count']
         daily_statistics, created = Daily_Statistics.objects.get_or_create(
             classification=classification,
@@ -219,13 +221,14 @@ def Minutely_statistics() :
         classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         if user_data['os_total'] == 'unconfirmed':
             continue
-        item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
-        item_count = user_data['count']
-        daily_statistics, created = Daily_Statistics.objects.get_or_create(
-            classification=classification,
-            item=item,
-            defaults={'item_count': item_count}
-        )
+        else:
+            item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
+            item_count = user_data['count']
+            daily_statistics, created = Daily_Statistics.objects.get_or_create(
+                classification=classification,
+                item=item,
+                defaults={'item_count': item_count}
+            )
         daily_statistics.save()
 
     # 업데이트 필요 통계
@@ -405,6 +408,8 @@ def Daily_statistics() :
         for user_data in service_user:
             classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
+            if item == 'False' or item == 'True':
+                item = 'unconfirmed'
             item_count = user_data['count']
             daily_statistics_log = Daily_Statistics_log(
                 classification=classification,
@@ -463,5 +468,6 @@ def Daily_statistics() :
         # daily_statistics_log.save()
     except Exception as e :
         logger.warning('Daily error' + str(e))
+        logger.warning('Daily error' + str(item))
 
     print("daily Statistics Success")
