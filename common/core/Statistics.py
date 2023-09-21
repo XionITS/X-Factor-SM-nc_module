@@ -232,7 +232,7 @@ def Minutely_statistics() :
         daily_statistics.save()
 
     # 업데이트 필요 통계
-    users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
+    users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
     #print(users)
     classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
     item = 'new'
@@ -244,7 +244,7 @@ def Minutely_statistics() :
     )
     daily_statistics.save()
     # 업데이트 필요 통계
-    users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
+    users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
     #print(users)
     classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
     item = 'old'
@@ -444,28 +444,28 @@ def Daily_statistics() :
             )
             daily_statistics_log.save()
 
-        # # 업데이트 필요 통계
-        # users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
-        # classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
-        # item = 'new'
-        # item_count = sum(item['count'] for item in users)
-        # daily_statistics_log = Daily_Statistics_log(
-        #     classification=classification,
-        #     item=item,
-        #     defaults={'item_count': item_count}
-        # )
-        # daily_statistics_log.save()
-        # # 업데이트 필요 통계
-        # users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_total', 'os_build').annotate(count=Count('os_total'))
-        # classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
-        # item = 'old'
-        # item_count = sum(item['count'] for item in users)
-        # daily_statistics_log = Daily_Statistics_log(
-        #     classification=classification,
-        #     item=item,
-        #     defaults={'item_count': item_count}
-        # )
-        # daily_statistics_log.save()
+        # 업데이트 필요 통계
+        users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'new'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
+        # 업데이트 필요 통계
+        users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'old'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
     except Exception as e :
         logger.warning('Daily error' + str(e))
         logger.warning('Daily error' + str(item))
