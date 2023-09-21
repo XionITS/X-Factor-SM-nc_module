@@ -268,6 +268,93 @@ def Minutely_statistics() :
     )
     daily_statistics.save()
 
+
+    # online window
+    user = Xfactor_Common.objects.filter(user_date__gte=time)
+    users = user.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Notebook_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+    # online mac
+    user = Xfactor_Common.objects.filter(user_date__gte=time)
+    users = user.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Desktop_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+    # online other
+    user = Xfactor_Common.objects.filter(user_date__gte=time)
+    users = user.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Other_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+
+    # total window
+    user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+    users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+    # total mac
+    user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+    users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Desktop_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+    # total other
+    user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+    users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+    for user_data in users:
+        classification = 'Other_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = user_data['os_simple']
+        item_count = user_data['count']
+        daily_statistics, created = Daily_Statistics.objects.get_or_create(
+            classification=classification,
+            item=item,
+            defaults={'item_count': item_count}
+        )
+        daily_statistics.save()
+
+
     print("Minutely Statistics Success")
 
 
@@ -490,6 +577,94 @@ def Daily_statistics() :
             item_count=item_count
         )
         daily_statistics_log.save()
+
+
+
+        # online window
+        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        users = user.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Notebook_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # online mac
+        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        users = user.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Desktop_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # online other
+        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        users = user.exclude(Q(chassistype='Desktop') | Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Other_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # total window
+        seven_days_ago = now - timedelta(days=7)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # total mac
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Desktop_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # total other
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Other_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
     except Exception as e :
         logger.warning('Daily error' + str(e))
         logger.warning('Daily error' + str(item))
