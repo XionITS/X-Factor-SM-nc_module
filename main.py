@@ -41,7 +41,7 @@ def daily():
 def main():
     try :
         CTMPI()
-        #CTDPI()
+        CTDPI()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')
 

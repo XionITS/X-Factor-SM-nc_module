@@ -5,7 +5,7 @@
 # django.setup()
 import logging
 from ..models import *
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 import pytz
 import time
 from datetime import datetime, timedelta
@@ -97,25 +97,37 @@ def Minutely_statistics() :
 
     #subnet 대역별
     users = user.values('subnet').annotate(count=Count('subnet'))
+    inCount = 0
+    outCount = 0
+    vCount = 0
     for user_data in users:
-        classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
-        # item = user_data['subnet']
         if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21',  '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22'\
             , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
-            item = '사내망'
-        elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20'] :
-            item = 'VPN'
-        # elif user_data['subnet'] == 'unconfirmed':
-        #     item = 'unconfirmed'
+            inCount += user_data['count']
+        elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
+            vCount += user_data['count']
         else :
-            item = '외부망'
-        item_count = user_data['count']
-        daily_statistics, created = Daily_Statistics.objects.get_or_create(
-            classification=classification,
-            item=item,
-            defaults={'item_count': item_count}
-        )
-        daily_statistics.save()
+            outCount += user_data['count']
+    daily_statistics, created = Daily_Statistics.objects.get_or_create(
+        classification='subnet',
+        item='사내망',
+        defaults={'item_count': inCount}
+    )
+    daily_statistics.save()
+
+    daily_statistics, created = Daily_Statistics.objects.get_or_create(
+        classification='subnet',
+        item='VPN',
+        defaults={'item_count': vCount}
+    )
+    daily_statistics.save()
+
+    daily_statistics, created = Daily_Statistics.objects.get_or_create(
+        classification='subnet',
+        item='외부망',
+        defaults={'item_count': outCount}
+    )
+    daily_statistics.save()
 
     #보안패치 필요여부 모듈
     nec_item = 0
@@ -314,25 +326,37 @@ def Daily_statistics() :
 
         #subnet 대역별
         users = user.values('subnet').annotate(count=Count('subnet'))
+        inCount = 0
+        outCount = 0
+        vCount = 0
         for user_data in users:
-            classification = 'subnet'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
-            # item = user_data['subnet']
-            if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21',  '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22'\
-                , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
-                item = '사내망'
-            elif user_data['subnet'] == '172.21.224.0/20' :
-                item = 'VPN'
-            elif user_data['subnet'] == 'unconfirmed':
-                item = 'unconfirmed'
-            else :
-                item = '외부망'
-            item_count = user_data['count']
-            daily_statistics_log = Daily_Statistics_log(
-                classification=classification,
-                item=item,
-                item_count=item_count
-            )
-            daily_statistics_log.save()
+            if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21', '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22' \
+                    , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
+                inCount += user_data['count']
+            elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
+                vCount += user_data['count']
+            else:
+                outCount += user_data['count']
+        daily_statistics_log = Daily_Statistics_log(
+            classification='subnet',
+            item='사내망',
+            item_count=inCount
+        )
+        daily_statistics_log.save()
+
+        daily_statistics_log = Daily_Statistics_log(
+            classification='subnet',
+            item='VPN',
+            item_count=vCount
+        )
+        daily_statistics_log.save()
+
+        daily_statistics_log = Daily_Statistics_log(
+            classification='subnet',
+            item='외부망',
+            item_count= outCount
+        )
+        daily_statistics_log.save()
 
         #보안패치 필요여부 모듈
         nec_item = 0
