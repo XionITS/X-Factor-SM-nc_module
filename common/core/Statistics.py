@@ -19,7 +19,7 @@ def Minutely_statistics() :
     local_tz = pytz.timezone('Asia/Seoul')
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     now = utc_now.astimezone(local_tz)
-    time = now - timedelta(minutes=70)
+    time = now - timedelta(minutes=60)
     user = Xfactor_Common.objects.filter(user_date__gte=time)
     service = Xfactor_Service.objects.filter(user_date__gte=time)
     #user = Xfactor_Common.objects.exclude(computer_id='unconfirmed').filter(user_date__gte=time)
