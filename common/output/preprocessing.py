@@ -13,6 +13,7 @@ def plug_in(data):
             for j in range(len(d)):
                 if 'result' not in d[j][0]['text'] \
                         and 'TSE' not in d[j][0]['text'] \
+                        and 'Can not determine' not in d[j][0]['text'] \
                         and 'hash' not in d[j][0]['text'] \
                         and 'Unknown' not in d[j][0]['text']:
                     d[j][0]['text'] = d[j][0]['text']

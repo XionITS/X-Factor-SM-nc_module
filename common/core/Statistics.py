@@ -129,30 +129,38 @@ def Minutely_statistics() :
     )
     daily_statistics.save()
 
-    #보안패치 필요여부 모듈
+    # 보안패치 필요여부 모듈
     nec_item = 0
     unnec_item = 0
+    uncon_item = 0
     three_months_ago = datetime.now() - timedelta(days=90)
+    user = Xfactor_Common.objects.filter(user_date__gte=time, os_simple='Windows')
     users = user.values('hotfix_date')
-    for user in users:
-        date_strings=user['hotfix_date'].split('<br> ')
+    for patch_user in users:
+        date_strings = patch_user['hotfix_date'].split('<br> ')
         date_objects = []
         for date_str in date_strings:
             try:
                 date_obj = datetime.strptime(date_str, '%m/%d/%Y %H:%M:%S')
                 date_objects.append(date_obj)
             except ValueError:
-                pass
+                continue
         if date_objects:
             latest_date = max(date_objects)
+
             if latest_date < three_months_ago:
                 nec_item += 1
-            else:
+                # print(latest_date)
+            elif latest_date >= three_months_ago:
                 unnec_item += 1
+                # print(latest_date)
+            else:
+                uncon_item += 1
 
     classification = 'hotfix'
     item_nec = "보안패치 필요"
     item_unnec = "보안패치 불필요"
+    item_uncon = "unconfirmed"
     hotfix_unnecessery, created = Daily_Statistics.objects.get_or_create(
         classification=classification,
         item=item_unnec,
@@ -166,6 +174,13 @@ def Minutely_statistics() :
         defaults={'item_count': nec_item}
     )
     hotfix_necessery.save()
+
+    hotfix_unconfirmed, created = Daily_Statistics.objects.get_or_create(
+        classification=classification,
+        item=item_uncon,
+        defaults={'item_count': uncon_item}
+    )
+    hotfix_unconfirmed.save()
 
 
     #미관리 제외 나머지 자산
