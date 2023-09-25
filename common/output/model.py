@@ -96,7 +96,7 @@ def plug_in_service(data):
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     # 현재 시간대로 시간 변환
     now = utc_now.astimezone(local_tz)
-
+    #now = now.replace(minute=0, second=0, microsecond=0)
     proc_data = PROC(data)
     for d in proc_data:
         computer_id = d[0][0]['text']
@@ -131,7 +131,7 @@ def plug_in_purchase(data):
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     # 현재 시간대로 시간 변환
     now = utc_now.astimezone(local_tz)
-
+    #now = now.replace(minute=0, second=0, microsecond=0)
     proc_data = PROC(data)
     for d in proc_data:
         computer_id = d[0][0]['text']
@@ -159,7 +159,7 @@ def plug_in_security(data):
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     # 현재 시간대로 시간 변환
     now = utc_now.astimezone(local_tz)
-
+    #now = now.replace(minute=0, second=0, microsecond=0)
     proc_data = PROC(data)
     for d in proc_data:
         chr_list = []
@@ -241,7 +241,7 @@ def plug_in_daily(data):
             utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
             # 현재 시간대로 시간 변환
             now = utc_now.astimezone(local_tz)
-
+            #now = now.replace(minute=0, second=0, microsecond=0)
 
             for s in range(len(d[14])):
                 sw_list.append(d[14][s]['text'])

@@ -2,6 +2,7 @@ import requests
 import json
 import logging
 from common.input.Session import plug_in as session
+import time
 
 with open("setting.json", encoding="UTF-8") as f:
     SETTING = json.loads(f.read())
@@ -29,6 +30,7 @@ def plug_in(type):
         CSH = {'session': SK}
         CSU = APIURL + CSP + CSID
         CSR = requests.post(CSU, headers=CSH, verify=False)
+        #time.sleep(30)
         CSRT = CSR.content.decode('utf-8', errors='ignore')
         CSRJ = json.loads(CSRT)
         CSRJD = CSRJ['data']
