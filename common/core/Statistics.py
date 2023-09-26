@@ -22,7 +22,7 @@ def Minutely_statistics() :
     time = now - timedelta(minutes=70)
 
     user = Xfactor_Common.objects.filter(user_date__gte=time)
-    service = Xfactor_Service.objects.filter(user_date__gte=time)
+    #service = Xfactor_Service.objects.filter(user_date__gte=time)
     #user = Xfactor_Common.objects.exclude(computer_id='unconfirmed').filter(user_date__gte=time)
     users = user.values('chassistype').annotate(count=Count('chassistype'))
     for user_data in users:
@@ -214,7 +214,7 @@ def Minutely_statistics() :
     daily_statistics.save()
 
     #Office 버전별 통계
-    service_user = service.values('essential5').annotate(count=Count('essential5'))
+    service_user = user.values('essential5').annotate(count=Count('essential5'))
     for user_data in service_user:
         classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = user_data['essential5']
@@ -229,7 +229,7 @@ def Minutely_statistics() :
         daily_statistics.save()
 
     # cpu 사용량
-    services = service.values('t_cpu').annotate(count=Count('t_cpu'))
+    services = user.values('t_cpu').annotate(count=Count('t_cpu'))
     for service_data in services:
         classification = 't_cpu'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = service_data['t_cpu']
@@ -387,7 +387,7 @@ def Daily_statistics() :
 
         #user = Xfactor_Daily.objects.filter(user_date__date=now.date())
         user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
-        service = Xfactor_Service.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        #service = Xfactor_Common.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
         #user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
         users = user.values('chassistype').annotate(count=Count('chassistype'))
         for user_data in users:
@@ -546,7 +546,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # cpu 사용량
-        services = service.values('t_cpu').annotate(count=Count('t_cpu'))
+        services = user.values('t_cpu').annotate(count=Count('t_cpu'))
         for service_data in services:
             classification = 't_cpu'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = service_data['t_cpu']

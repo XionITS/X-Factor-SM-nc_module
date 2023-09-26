@@ -67,6 +67,14 @@ def plug_in_minutely(data):
                 'hotfix': str(hot_list).replace("''", '').replace("' ", '').replace("'", '').replace(",", "<br>").replace('[', '').replace(']', ''),
                 'hotfix_date': str(hotdate_list).replace("''", '').replace("' ", '').replace("'", '').replace(",", "<br>").replace('[', '').replace(']', ''),
                 'subnet' : d[22][0]['text'],
+                'essential1': d[23][0]['text'],
+                'essential2': d[24][0]['text'],
+                'essential3': d[25][0]['text'],
+                'essential4': d[26][0]['text'],
+                'essential5': d[27][0]['text'],
+                'mem_use': d[28][0]['text'],
+                'disk_use': d[29][0]['text'],
+                't_cpu': d[30][0]['text'],
                 'user_date' : now
             }
             xfactor_common, created  = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
@@ -88,40 +96,40 @@ def plug_in_minutely(data):
         # sw_list = d[10][0]['text'])
         # xfactor_user.save()
 
-def plug_in_service(data):
-
-    # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
-    local_tz = pytz.timezone('Asia/Seoul')
-    # UTC 시간대를 사용하여 현재 시간을 얻음
-    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    # 현재 시간대로 시간 변환
-    now = utc_now.astimezone(local_tz)
-    #now = now.replace(minute=0, second=0, microsecond=0)
-    proc_data = PROC(data)
-    for d in proc_data:
-        computer_id = d[0][0]['text']
-        try:
-            common_id = Xfactor_Common.objects.get(computer_id=computer_id)
-        except Exception as e:
-            print(computer_id)
-            print(e)
-            print("미닛틀리 예외발생")
-            continue  # 다음 for문으로 넘어감
-        defaults = {
-            'essential1': d[1][0]['text'],
-            'essential2': d[2][0]['text'],
-            'essential3': d[3][0]['text'],
-            'essential4': d[4][0]['text'],
-            'essential5': d[5][0]['text'],
-            'subnet': d[6][0]['text'],
-            'mem_use': d[7][0]['text'],
-            'disk_use': d[8][0]['text'],
-            't_cpu': d[9][0]['text'],
-            'user_date': now
-        }
-        computer_id = common_id.computer_id
-        xfactor_service, created = Xfactor_Service.objects.update_or_create(computer_id=computer_id, defaults=defaults)
-    return HttpResponse("Data saved successfully!")
+# def plug_in_service(data):
+#
+#     # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
+#     local_tz = pytz.timezone('Asia/Seoul')
+#     # UTC 시간대를 사용하여 현재 시간을 얻음
+#     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+#     # 현재 시간대로 시간 변환
+#     now = utc_now.astimezone(local_tz)
+#     #now = now.replace(minute=0, second=0, microsecond=0)
+#     proc_data = PROC(data)
+#     for d in proc_data:
+#         computer_id = d[0][0]['text']
+#         try:
+#             common_id = Xfactor_Common.objects.get(computer_id=computer_id)
+#         except Exception as e:
+#             print(computer_id)
+#             print(e)
+#             print("미닛틀리 예외발생")
+#             continue  # 다음 for문으로 넘어감
+#         defaults = {
+#             'essential1': d[1][0]['text'],
+#             'essential2': d[2][0]['text'],
+#             'essential3': d[3][0]['text'],
+#             'essential4': d[4][0]['text'],
+#             'essential5': d[5][0]['text'],
+#             'subnet': d[6][0]['text'],
+#             'mem_use': d[7][0]['text'],
+#             'disk_use': d[8][0]['text'],
+#             't_cpu': d[9][0]['text'],
+#             'user_date': now
+#         }
+#         computer_id = common_id.computer_id
+#         xfactor_service, created = Xfactor_Service.objects.update_or_create(computer_id=computer_id, defaults=defaults)
+#     return HttpResponse("Data saved successfully!")
 
 
 def plug_in_purchase(data):
