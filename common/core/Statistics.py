@@ -561,6 +561,8 @@ def Daily_statistics() :
         # os버전별 자산 현황
         users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
         for user_data in users:
+            if user_data['os_total'] == 'unconfirmed':
+                continue
             classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
             item_count = user_data['count']
@@ -680,6 +682,32 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
+
+        # notebook total
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'Notebook'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
+
+        # desktop total
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        classification = 'Desktop_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'Desktop'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
 
     except Exception as e :
         logger.warning('Daily error' + str(e))
