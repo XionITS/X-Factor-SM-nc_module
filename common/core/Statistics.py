@@ -248,6 +248,7 @@ def Minutely_statistics() :
     for user_data in users:
         classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         if user_data['os_total'] == 'unconfirmed':
+            logger.warning('미닛틀리 error os 버전별')
             continue
         else:
             item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
@@ -474,7 +475,7 @@ def Daily_statistics() :
                     date_obj = datetime.strptime(date_str, '%m/%d/%Y %H:%M:%S')
                     date_objects.append(date_obj)
                 except ValueError:
-                    pass
+                    continue
             if date_objects:
                 latest_date = max(date_objects)
                 if latest_date < three_months_ago:
@@ -562,6 +563,7 @@ def Daily_statistics() :
         users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
         for user_data in users:
             if user_data['os_total'] == 'unconfirmed':
+                logger.warning('Daily error os 버전별')
                 continue
             classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
