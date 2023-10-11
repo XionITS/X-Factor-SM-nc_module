@@ -75,6 +75,7 @@ def plug_in_minutely(data):
                 'mem_use': d[28][0]['text'],
                 'disk_use': d[29][0]['text'],
                 't_cpu': d[30][0]['text'],
+                'logged_name': d[31][0]['text'],
                 'user_date' : now
             }
             xfactor_common, created  = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
@@ -320,6 +321,7 @@ def plug_in_daily(data):
                 'ext_edg_ver': str(edg_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'ext_fir': str(fir_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'ext_fir_ver': str(fir_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'logged_name': d[49][0]['text'],
                 'user_date': now
             }
             xfactor_common_log = Xfactor_Daily.objects.create(computer_id=computer_id, **defaults)

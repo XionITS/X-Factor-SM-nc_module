@@ -45,11 +45,11 @@
           "username": "administrator",
           "password": "xion123!",
           "SensorID": {
-            "COMMON" : "1558",
+            "COMMON" : "1681",
             "SERVICE": "1418",
             "SECURITY": "1300",
             "PURCHASE": "1299",
-            "DAILY" : "1438"
+            "DAILY" : "1679"
           }
         },
         "DB" : {
