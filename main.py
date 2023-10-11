@@ -2,6 +2,7 @@ from datetime import datetime
 
 from common.core.Dashboard import daily_plug_in as CTDPI
 from common.core.Dashboard import minutely_plug_in as CTMPI
+from common.core.Kafka import Kafka_Con
 from common.etc.thread import count as count
 import urllib3
 import threading
@@ -42,6 +43,7 @@ def main():
     try :
         CTMPI()
         CTDPI()
+        #Kafka_Con()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')
 
