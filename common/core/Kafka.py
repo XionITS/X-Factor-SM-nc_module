@@ -76,9 +76,14 @@ def Kafka_Con():
     print("Kafka 연결1")
     # Kafka 설정
     kafka_config = {
-        'bootstrap.servers': '172.20.5.26:9092',  # Kafka 브로커 IP와 포트
-        'group.id': 'my-consumer-group',
+        'bootstrap.servers': '172.20.5.232:9092',  # Kafka 브로커 IP와 포트
+        'group.id': 'nch.itservice.tanium',
         'auto.offset.reset': 'earliest',
+        'security.protocol': 'SASL_PLAINTEXT',
+        'sasl.mechanism': 'SCRAM-SHA-512',
+        'sasl.username': 'nch.tanium.tadmin',
+        'sasl.password': 'mb475g4dvGQzQ',
+        'enable.auto.commit': False
     }
     # Kafka 토픽 설정
     kafka_topic = 'stg.korea.nck.employee.entire'
@@ -103,7 +108,7 @@ def Kafka_Con():
             # Kafka에서 받은 메시지를 처리
             data = msg.value().decode('utf-8')
             message = json.loads(data)
-            payload = message.get('payload')
+            payload = message['payload']
             save_to_postgresql(payload)
 
     print("Kafka 연결4")
