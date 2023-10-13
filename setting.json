@@ -77,7 +77,7 @@
           "PS" : {
             "HOST": "localhost",
             "PORT": "5432",
-            "NAME": "postgres",
+            "NAME": "ncsm",
             "USER": "postgres",
             "PWD": "psql",
             "TNM": {
