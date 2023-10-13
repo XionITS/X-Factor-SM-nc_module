@@ -1,3 +1,5 @@
+import json
+
 from confluent_kafka import Consumer, KafkaError
 import psycopg2
 
@@ -41,34 +43,57 @@ def save_to_postgresql(data):
         'host': '172.20.161.64',
         'port': '5432'
     }
-
     conn = psycopg2.connect(**pg_config)
     cursor = conn.cursor()
-    # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
-    cursor.execute("INSERT INTO common_xfactor_ncdb (column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13) "
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,)"
-                   , (data['value1'], data['value2'], data['value3'], data['value4'], data['value5'], data['value6'], data['value7'], data['value8'], data['value9'], data['value10'], data['value11'], data['value12'], data['value13']))
 
+    # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
+    try:
+        cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                       , (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
+    except Exception as e:
+        print(e)
     conn.commit()
     cursor.close()
     conn.close()
 
 
 def Kafka_Con():
-    print("Kafka 연결")
+    pg_config = {
+        'dbname': 'ncsm',
+        'user': 'postgres',
+        'password': 'psql',
+        'host': '172.20.161.64',
+        'port': '5432'
+    }
+    conn = psycopg2.connect(**pg_config)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("TRUNCATE TABLE common_xfactor_ncdb")
+    except Exception as e:
+        print(e)
+
+    print("Kafka 연결1")
     # Kafka 설정
     kafka_config = {
-        'bootstrap.servers': '172.20.5.26:9092',  # Kafka 브로커 IP와 포트
-        'group.id': 'my-consumer-group',
-        'auto.offset.reset': 'earliest'
+        'bootstrap.servers': '172.20.5.232:9092',  # Kafka 브로커 IP와 포트
+        'group.id': 'nch.itservice.tanium',
+        'auto.offset.reset': 'earliest',
+        'security.protocol': 'SASL_PLAINTEXT',
+        'sasl.mechanism': 'SCRAM-SHA-512',
+        'sasl.username': 'nch.tanium.tadmin',
+        'sasl.password': 'mb475g4dvGQzQ',
+        'enable.auto.commit': False
     }
     # Kafka 토픽 설정
     kafka_topic = 'stg.korea.nck.employee.entire'
+    print("Kafka 연결2")
     #[dev./qa./stg./없음]korea.[companyCode].employee.entire
 
     # Kafka 소비자 생성
     consumer = Consumer(kafka_config)
     consumer.subscribe([kafka_topic])
+    print("Kafka 연결3")
 
     while True:
         msg = consumer.poll(1.0)
@@ -81,8 +106,11 @@ def Kafka_Con():
                 print('Error while consuming message: {}'.format(msg.error()))
         else:
             # Kafka에서 받은 메시지를 처리
-            data = eval(msg.value().decode('utf-8'))
-            save_to_postgresql(data)
+            data = msg.value().decode('utf-8')
+            message = json.loads(data)
+            payload = message['payload']
+            save_to_postgresql(payload)
 
+    print("Kafka 연결4")
     # 소비자 종료
     consumer.close()
