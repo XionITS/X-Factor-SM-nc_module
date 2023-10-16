@@ -86,7 +86,7 @@ def Kafka_Con():
         'enable.auto.commit': False
     }
     # Kafka 토픽 설정
-    kafka_topic = 'stg.korea.nck.employee.entire'
+    kafka_topic = 'korea.nck.employee.entire'
     print("Kafka 연결2")
     #[dev./qa./stg./없음]korea.[companyCode].employee.entire
 
@@ -98,7 +98,8 @@ def Kafka_Con():
     while True:
         msg = consumer.poll(1.0)
         if msg is None:
-            continue
+            consumer.close()
+            break
         if msg.error():
             if msg.error().code() == KafkaError._PARTITION_EOF:
                 print('Reached end of partition')
@@ -109,6 +110,7 @@ def Kafka_Con():
             data = msg.value().decode('utf-8')
             message = json.loads(data)
             payload = message['payload']
+
             save_to_postgresql(payload)
 
     print("Kafka 연결4")

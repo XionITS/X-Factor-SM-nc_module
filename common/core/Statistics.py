@@ -214,12 +214,11 @@ def Minutely_statistics() :
         daily_statistics.save()
 
         #Office 버전별 통계
+        user = Xfactor_Common.objects.filter(user_date__gte=time)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
             classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
-            if item == 'False' or item == 'True' :
-                item = 'unconfirmed'
             item_count = user_data['count']
             daily_statistics, created = Daily_Statistics.objects.get_or_create(
                 classification=classification,
@@ -538,8 +537,6 @@ def Daily_statistics() :
         for user_data in service_user:
             classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
-            if item == 'False' or item == 'True':
-                item = 'unconfirmed'
             item_count = user_data['count']
             daily_statistics_log = Daily_Statistics_log(
                 classification=classification,
