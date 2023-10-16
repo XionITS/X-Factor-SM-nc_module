@@ -53,7 +53,7 @@ def main():
     try :
         CTMPI()
         CTDPI()
-        Kafka_Con()
+        #Kafka_Con()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')
 
@@ -88,7 +88,7 @@ def main():
     #test용
     sched.add_job(minutely, 'cron', hour='0-23', minute='0', second='10', misfire_grace_time=None)  # seconds='3'
     sched.add_job(daily, 'cron', hour='0-23', minute='10',  second='20' , misfire_grace_time=None)
-    sched.add_job(kafka, 'cron', hour='0', minute='30',  second='20' , misfire_grace_time=None)
+    #sched.add_job(kafka, 'cron', hour='0', minute='30',  second='20' , misfire_grace_time=None)
     logger.info('Start the Scheduling~')
     sched.start()
 
