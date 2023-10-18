@@ -383,12 +383,17 @@ def Daily_statistics() :
         #chassis_type 섀시타입
         local_tz = pytz.timezone('Asia/Seoul')
         utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+        # now = utc_now.astimezone(local_tz)
+        # start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        # end_of_today = start_of_today + timedelta(days=1)
+
         now = utc_now.astimezone(local_tz)
-        start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_of_today = start_of_today + timedelta(days=1)
+        time = now - timedelta(minutes=60)
+
+        #user = Xfactor_Common.objects.filter(user_date__gte=time)
 
         #user = Xfactor_Daily.objects.filter(user_date__date=now.date())
-        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #service = Xfactor_Common.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
         #user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
         users = user.values('chassistype').annotate(count=Count('chassistype'))
@@ -532,7 +537,7 @@ def Daily_statistics() :
 
 
         #Office 버전별 통계
-        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
             classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -599,7 +604,7 @@ def Daily_statistics() :
 
 
         # online window
-        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Notebook_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -613,7 +618,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # online mac
-        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Desktop_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -627,7 +632,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # online other
-        user = Xfactor_Daily.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.exclude(Q(chassistype='Desktop') | Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Other_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
