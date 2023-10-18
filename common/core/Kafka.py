@@ -59,19 +59,19 @@ def save_to_postgresql(data):
 
 
 def Kafka_Con():
-    pg_config = {
-        'dbname': 'ncsm',
-        'user': 'postgres',
-        'password': 'psql',
-        'host': '172.20.161.64',
-        'port': '5432'
-    }
-    conn = psycopg2.connect(**pg_config)
-    cursor = conn.cursor()
-    try:
-        cursor.execute("TRUNCATE TABLE common_xfactor_ncdb")
-    except Exception as e:
-        print(e)
+    # pg_config = {
+    #     'dbname': 'ncsm',
+    #     'user': 'postgres',
+    #     'password': 'psql',
+    #     'host': '172.20.161.64',
+    #     'port': '5432'
+    # }
+    # conn = psycopg2.connect(**pg_config)
+    # cursor = conn.cursor()
+    # try:
+    #     cursor.execute("TRUNCATE TABLE common_xfactor_ncdb")
+    # except Exception as e:
+    #     print(e)
 
     print("Kafka 연결1")
     # Kafka 설정
@@ -96,7 +96,7 @@ def Kafka_Con():
     print("Kafka 연결3")
 
     while True:
-        msg = consumer.poll(1.0)
+        msg = consumer.poll(10.0)
         if msg is None:
             consumer.close()
             break
