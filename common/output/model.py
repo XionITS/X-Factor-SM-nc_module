@@ -1,5 +1,8 @@
 from django.http import HttpResponse
 import os
+
+from django.utils import timezone
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django
 django.setup()
@@ -78,7 +81,7 @@ def plug_in_minutely(data):
                 'logged_name': d[31][0]['text'].replace('NC-KOREA\\',''),
                 'user_date' : now
             }
-            xfactor_common, created  = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
+            xfactor_common, created = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
             # xfactor_common.save()
     except Exception as e:
         print(e)
@@ -330,3 +333,48 @@ def plug_in_daily(data):
         print(d)
         print(e)
     return HttpResponse("Data saved successfully!")
+
+def cache():
+    if Xfactor_Common.objects.all() != None:
+        xfactor_common_records = Xfactor_Common.objects.all()
+
+        # Xfactor_Common_Cache 업데이트
+        for record in xfactor_common_records:
+            Xfactor_Common_Cache.objects.create(
+                computer_id=record.computer_id,
+                computer_name=record.computer_name,
+                ip_address=record.ip_address,
+                mac_address=record.mac_address,
+                chassistype=record.chassistype,
+                os_simple=record.os_simple,
+                os_total=record.os_total,
+                os_version=record.os_version,
+                os_build=record.os_build,
+                hw_cpu=record.hw_cpu,
+                hw_ram=record.hw_ram,
+                hw_mb=record.hw_mb,
+                hw_disk=record.hw_disk,
+                hw_gpu=record.hw_gpu,
+                sw_list=record.sw_list,
+                sw_ver_list=record.sw_ver_list,
+                sw_install=record.sw_install,
+                sw_lastrun=record.sw_lastrun,
+                first_network=record.first_network,
+                last_network=record.last_network,
+                hotfix=record.hotfix,
+                hotfix_date=record.hotfix_date,
+                subnet=record.subnet,
+                memo=record.memo,
+                essential1=record.essential1,
+                essential2=record.essential2,
+                essential3=record.essential3,
+                essential4=record.essential4,
+                essential5=record.essential5,
+                mem_use=record.mem_use,
+                disk_use=record.disk_use,
+                t_cpu=record.t_cpu,
+                logged_name=record.logged_name,
+                cache_date=record.user_date,
+                user_date=timezone.now()
+                # 필요한 모든 필드 추가...
+            )

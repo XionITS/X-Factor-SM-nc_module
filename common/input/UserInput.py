@@ -30,7 +30,7 @@ def plug_in(type):
         CSH = {'session': SK}
         CSU = APIURL + CSP + CSID
         CSR = requests.post(CSU, headers=CSH, verify=False)
-        time.sleep(60)
+        # time.sleep(60)
         CSRT = CSR.content.decode('utf-8', errors='ignore')
         CSRJ = json.loads(CSRT)
         CSRJD = CSRJ['data']

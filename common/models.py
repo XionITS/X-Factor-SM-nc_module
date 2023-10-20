@@ -1,5 +1,8 @@
-from django.db import models
+from django.db import models, transaction
 #
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+from django.utils import timezone
 
 
 class Xfactor_ncdb(models.Model):
@@ -52,7 +55,6 @@ class Xfactor_Common(models.Model):
     t_cpu = models.CharField(max_length=100, null=True)
     logged_name = models.CharField(max_length=100, null=True)
     user_date = models.DateTimeField(auto_now_add=True)
-
 
 class Xfactor_Daily(models.Model):
     computer_id = models.CharField(max_length=100)
@@ -231,3 +233,40 @@ class Xfactor_Log(models.Model):
     log_user = models.CharField(max_length=100)
     log_date = models.DateTimeField(auto_now_add=True)
 
+
+class Xfactor_Common_Cache(models.Model):
+    computer_id = models.CharField(max_length=100)
+    computer_name = models.CharField(max_length=100)
+    ip_address = models.CharField(max_length=100)
+    mac_address = models.CharField(max_length=100)
+    chassistype = models.CharField(max_length=100)
+    os_simple = models.CharField(max_length=100)
+    os_total = models.CharField(max_length=100)
+    os_version = models.CharField(max_length=500)
+    os_build = models.CharField(max_length=500)
+    hw_cpu = models.CharField(max_length=500)
+    hw_ram = models.CharField(max_length=500)
+    hw_mb = models.CharField(max_length=500)
+    hw_disk = models.CharField(max_length=500)
+    hw_gpu = models.CharField(max_length=500)
+    sw_list = models.TextField()
+    sw_ver_list = models.TextField()
+    sw_install = models.TextField(null=True)
+    sw_lastrun = models.TextField(null=True)
+    first_network = models.TextField(null=True)
+    last_network = models.TextField(null=True)
+    hotfix = models.TextField(null=True)
+    hotfix_date = models.TextField(null=True)
+    subnet = models.TextField(null=True)
+    memo = models.TextField(null=True)
+    essential1 = models.CharField(max_length=100, null=True)
+    essential2 = models.CharField(max_length=100, null=True)
+    essential3 = models.CharField(max_length=100, null=True)
+    essential4 = models.CharField(max_length=100, null=True)
+    essential5 = models.CharField(max_length=100, null=True)
+    mem_use = models.CharField(max_length=100, null=True)
+    disk_use = models.CharField(max_length=100, null=True)
+    t_cpu = models.CharField(max_length=100, null=True)
+    logged_name = models.CharField(max_length=100, null=True)
+    cache_date = models.DateTimeField(null=True)
+    user_date = models.DateTimeField(auto_now_add=True)

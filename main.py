@@ -11,6 +11,8 @@ import time
 import json
 from common.etc.logger import date_handler
 from apscheduler.schedulers.background import BlockingScheduler
+
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 run_main = True
@@ -77,8 +79,8 @@ def main():
         print("...........{}".format(i + 1), end="\r")
         time.sleep(1)
 
-    CDTH="13"
-    CDTM="20"
+    CDTH="21"
+    CDTM="09"
     thread.start()
     sched = BlockingScheduler(timezone='Asia/Seoul')
     #실제
@@ -86,8 +88,9 @@ def main():
     # sched.add_job(daily, 'cron', minute='*/10', second='10', misfire_grace_time=None)
 
     #test용
+    # sched.add_job(minutely, 'cron', hour=CDTH, minute=CDTM, second='10', misfire_grace_time=None)  # seconds='3'
     sched.add_job(minutely, 'cron', hour='0-23', minute='0', second='10', misfire_grace_time=None)  # seconds='3'
-    sched.add_job(daily, 'cron', hour='0-23', minute='10',  second='20' , misfire_grace_time=None)
+    sched.add_job(daily, 'cron', hour='0-23', minute='10',  second='20', misfire_grace_time=None)
     #sched.add_job(kafka, 'cron', hour='0', minute='30',  second='20' , misfire_grace_time=None)
     logger.info('Start the Scheduling~')
     sched.start()

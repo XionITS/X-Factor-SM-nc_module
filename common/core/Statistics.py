@@ -409,6 +409,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         #os_type OS종류
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'os_simple'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -422,6 +423,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         #win_ver 윈도우버전
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.filter(Q(os_simple='Windows')).values('os_total').annotate(count=Count('os_total'))
         for user_data in users:
             classification = 'win_os_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -435,16 +437,20 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         #subnet 대역별
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.values('subnet').annotate(count=Count('subnet'))
         inCount = 0
         outCount = 0
         vCount = 0
+        unCount = 0
         for user_data in users:
             if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21', '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22' \
                     , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
                 inCount += user_data['count']
             elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
                 vCount += user_data['count']
+            elif user_data['subnet'] == 'unconfirmed':
+                unCount += user_data['count']
             else:
                 outCount += user_data['count']
         daily_statistics_log = Daily_Statistics_log(
@@ -465,6 +471,13 @@ def Daily_statistics() :
             classification='subnet',
             item='외부망',
             item_count= outCount
+        )
+        daily_statistics_log.save()
+
+        daily_statistics_log = Daily_Statistics_log(
+            classification='subnet',
+            item='미확인',
+            item_count=unCount
         )
         daily_statistics_log.save()
 
@@ -551,6 +564,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # cpu 사용량
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         services = user.values('t_cpu').annotate(count=Count('t_cpu'))
         for service_data in services:
             classification = 't_cpu'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -564,6 +578,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # os버전별 자산 현황
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
         for user_data in users:
             if user_data['os_total'] == 'unconfirmed':
@@ -579,7 +594,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # 업데이트 필요 통계
-        users = user.filter(Q(os_simple='Windows'), os_build__gte='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__gte='19044')).values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'new'
         item_count = sum(item['count'] for item in users)
@@ -590,7 +606,8 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
         # 업데이트 필요 통계
-        users = user.filter(Q(os_simple='Windows'), os_build__lt='19044').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__lt='19044')).values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'old'
         item_count = sum(item['count'] for item in users)
@@ -713,6 +730,78 @@ def Daily_statistics() :
             item_count=item_count
         )
         daily_statistics_log.save()
+
+        #-------------------------------------
+
+        # total window
+        seven_days_ago = now - timedelta(days=7)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Notebook_os_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # total mac
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Desktop_os_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # total other
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        for user_data in users:
+            classification = 'Other_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = user_data['os_simple']
+            item_count = user_data['count']
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
+
+        # notebook total
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
+        classification = 'Notebook_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'Notebook'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
+
+        # desktop total
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
+        classification = 'Desktop_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+        item = 'Desktop'
+        item_count = sum(item['count'] for item in users)
+        daily_statistics_log = Daily_Statistics_log(
+            classification=classification,
+            item=item,
+            item_count=item_count
+        )
+        daily_statistics_log.save()
+
 
     except Exception as e :
         logger.warning('Daily error' + str(e))
