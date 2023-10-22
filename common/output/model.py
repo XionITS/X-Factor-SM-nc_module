@@ -253,7 +253,7 @@ def plug_in_daily(data):
             utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
             # 현재 시간대로 시간 변환
             now = utc_now.astimezone(local_tz)
-            now = now.replace(minute=0, second=0, microsecond=0)
+            now = now.replace(minute=10, second=0, microsecond=0)
             #print(now)
             for s in range(len(d[14])):
                 sw_list.append(d[14][s]['text'])
