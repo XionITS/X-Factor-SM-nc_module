@@ -242,14 +242,14 @@ def Minutely_statistics() :
 
         # os버전별 자산 현황
         user = Xfactor_Common.objects.filter(user_date__gte=time)
-        users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
+        users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_simple')).order_by('-count')[:6]
         #print(users)
         for user_data in users:
             classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             if user_data['os_total'] == 'unconfirmed':
                 continue
             else:
-                item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
+                item = user_data['os_total'] + ' ' + user_data['os_build']
                 item_count = user_data['count']
                 daily_statistics, created = Daily_Statistics.objects.get_or_create(
                     classification=classification,
@@ -449,7 +449,7 @@ def Daily_statistics() :
                 inCount += user_data['count']
             elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
                 vCount += user_data['count']
-            elif user_data['subnet'] == 'unconfirmed':
+            elif user_data['subnet'] in ['unconfirmed', '']:
                 unCount += user_data['count']
             else:
                 outCount += user_data['count']
@@ -579,12 +579,12 @@ def Daily_statistics() :
 
         # os버전별 자산 현황
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        users = user.filter(Q(os_simple='Windows')).values('os_total', 'os_build').annotate(count=Count('os_total')).order_by('-count')[:6]
+        users = user.filter(Q(os_simple='Windows'), Q(os_total__contains='Windows')).values('os_total', 'os_build').annotate(count=Count('os_simple')).order_by('-count')[:6]
         for user_data in users:
-            if user_data['os_total'] == 'unconfirmed':
-                continue
+            # if user_data['os_total'] == 'unconfirmed':
+            #     continue
             classification = 'win_os_build'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
-            item = user_data['os_total'].split('Microsoft ')[1] + ' ' + user_data['os_build']
+            item = user_data['os_total'] + ' ' + user_data['os_build']
             item_count = user_data['count']
             daily_statistics_log = Daily_Statistics_log(
                 classification=classification,
@@ -595,7 +595,7 @@ def Daily_statistics() :
 
         # 업데이트 필요 통계
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        users = user.filter(Q(os_simple='Windows'), Q(os_build__gte='19044')).values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__gte='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'new'
         item_count = sum(item['count'] for item in users)
@@ -607,7 +607,7 @@ def Daily_statistics() :
         daily_statistics_log.save()
         # 업데이트 필요 통계
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        users = user.filter(Q(os_simple='Windows'), Q(os_build__lt='19044')).values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__lt='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'old'
         item_count = sum(item['count'] for item in users)
