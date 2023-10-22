@@ -27,6 +27,13 @@ def plug_in_minutely(data):
             sw_ver_lastrun_list = []
             hot_list = []
             hotdate_list = []
+            logged_name_id = d[31][0]['text'].replace('NC-KOREA\\','')
+            try:
+                logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
+            except Exception as e:
+                #ogged_name_id = d[31][0]['text'].replace('NC-KOREA\\', '')
+                logged_name_id = None
+
             # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
             local_tz = pytz.timezone('Asia/Seoul')
             # UTC 시간대를 사용하여 현재 시간을 얻음
@@ -78,7 +85,7 @@ def plug_in_minutely(data):
                 'mem_use': d[28][0]['text'],
                 'disk_use': d[29][0]['text'],
                 't_cpu': d[30][0]['text'],
-                'logged_name': d[31][0]['text'].replace('NC-KOREA\\',''),
+                'logged_name_id': logged_name_id,
                 'user_date' : now
             }
             xfactor_common, created = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
@@ -247,6 +254,14 @@ def plug_in_daily(data):
             edg_ver_list = []
             fir_list = []
             fir_ver_list = []
+
+            logged_name_id = d[49][0]['text'].replace('NC-KOREA\\','')
+            try:
+                logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
+            except Exception as e:
+                #logged_name_id = d[49][0]['text'].replace('NC-KOREA\\', '')
+                logged_name_id = None
+
             # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
             local_tz = pytz.timezone('Asia/Seoul')
             # UTC 시간대를 사용하여 현재 시간을 얻음
@@ -324,7 +339,7 @@ def plug_in_daily(data):
                 'ext_edg_ver': str(edg_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'ext_fir': str(fir_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'ext_fir_ver': str(fir_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
-                'logged_name': d[49][0]['text'].replace('NC-KOREA\\',''),
+                'logged_name_id': logged_name_id,
                 'user_date': now
             }
             xfactor_common_log = Xfactor_Daily.objects.create(computer_id=computer_id, **defaults)
@@ -373,7 +388,7 @@ def cache():
                 mem_use=record.mem_use,
                 disk_use=record.disk_use,
                 t_cpu=record.t_cpu,
-                logged_name=record.logged_name,
+                logged_name_id=record.logged_name_id,
                 cache_date=record.user_date,
                 user_date=timezone.now()
                 # 필요한 모든 필드 추가...
