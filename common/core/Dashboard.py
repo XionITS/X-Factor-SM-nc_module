@@ -21,7 +21,7 @@ with open("setting.json", encoding="UTF-8") as f:
 
 
 def minutely_plug_in():
-    cache()
+    # cache()
     user_asset = userinput('common')
     user_input = user_db(user_asset)
     # service_asset = userinput('service')

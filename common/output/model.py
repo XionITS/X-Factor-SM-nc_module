@@ -31,8 +31,10 @@ def plug_in_minutely(data):
             try:
                 logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
             except Exception as e:
-                #ogged_name_id = d[31][0]['text'].replace('NC-KOREA\\', '')
-                logged_name_id = None
+                custom_object = Xfactor_ncdb()
+                custom_object.userId = logged_name_id
+                # custom_object.save()
+                logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
 
             # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
             local_tz = pytz.timezone('Asia/Seoul')
