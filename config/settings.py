@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-xd2j)194#+fn_l=9e53ap+a(f7-b!_+00v51h2=zk^+(49x@fr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ncsm',
+        'NAME': 'ncsm2',
         'USER': 'postgres',
         'PASSWORD': 'psql',
-        'HOST': 'localhost',
+        'HOST': '172.20.161.129',
         'PORT': '5432',
     }
 }
