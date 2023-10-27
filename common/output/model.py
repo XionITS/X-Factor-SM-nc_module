@@ -33,7 +33,7 @@ def plug_in_minutely(data):
             except Exception as e:
                 custom_object = Xfactor_ncdb()
                 custom_object.userId = logged_name_id
-                # custom_object.save()
+                custom_object.save()
                 logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
 
             # 현재 시간대 객체 생성, 예시: "Asia/Seoul"
