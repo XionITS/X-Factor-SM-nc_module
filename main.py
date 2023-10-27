@@ -53,8 +53,8 @@ def kafka():
 
 def main():
     try :
-        # CTMPI()
-        # CTDPI()
+        CTMPI()
+        CTDPI()
         # Kafka_Con()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')

@@ -352,46 +352,54 @@ def plug_in_daily(data):
     return HttpResponse("Data saved successfully!")
 
 def cache():
-    if Xfactor_Common.objects.all() != None:
-        xfactor_common_records = Xfactor_Common.objects.all()
+    if Xfactor_Common.objects.exists():
+        common_objects = Xfactor_Common.objects.all()
 
-        # Xfactor_Common_Cache 업데이트
-        for record in xfactor_common_records:
-            Xfactor_Common_Cache.objects.create(
-                computer_id=record.computer_id,
-                computer_name=record.computer_name,
-                ip_address=record.ip_address,
-                mac_address=record.mac_address,
-                chassistype=record.chassistype,
-                os_simple=record.os_simple,
-                os_total=record.os_total.replace('Microsoft ', ''),
-                os_version=record.os_version,
-                os_build=record.os_build,
-                hw_cpu=record.hw_cpu,
-                hw_ram=record.hw_ram,
-                hw_mb=record.hw_mb,
-                hw_disk=record.hw_disk,
-                hw_gpu=record.hw_gpu,
-                sw_list=record.sw_list,
-                sw_ver_list=record.sw_ver_list,
-                sw_install=record.sw_install,
-                sw_lastrun=record.sw_lastrun,
-                first_network=record.first_network,
-                last_network=record.last_network,
-                hotfix=record.hotfix,
-                hotfix_date=record.hotfix_date,
-                subnet=record.subnet,
-                memo=record.memo,
-                essential1=record.essential1,
-                essential2=record.essential2,
-                essential3=record.essential3,
-                essential4=record.essential4,
-                essential5=record.essential5,
-                mem_use=record.mem_use,
-                disk_use=record.disk_use,
-                t_cpu=record.t_cpu,
-                logged_name_id=record.logged_name_id,
-                cache_date=record.user_date,
-                user_date=timezone.now()
-                # 필요한 모든 필드 추가...
-            )
+        for common in common_objects:
+            try:
+                # Xfactor_Common 객체와 동일한 필드 값을 가진 Xfactor_Common_Cache 객체를 생성합니다.
+                cache = Xfactor_Common_Cache(
+                    computer_id=common.computer_id,
+                    computer_name=common.computer_name,
+                    ip_address=common.ip_address,
+                    mac_address=common.mac_address,
+                    chassistype=common.chassistype,
+                    os_simple=common.os_simple,
+                    os_total=common.os_total,
+                    os_version=common.os_version,
+                    os_build=common.os_build,
+                    hw_cpu=common.hw_cpu,
+                    hw_ram=common.hw_ram,
+                    hw_mb=common.hw_mb,
+                    hw_disk=common.hw_disk,
+                    hw_gpu=common.hw_gpu,
+                    sw_list=common.sw_list,
+                    sw_ver_list=common.sw_ver_list,
+                    sw_install=common.sw_install,
+                    sw_lastrun=common.sw_lastrun,
+                    first_network=common.first_network,
+                    last_network=common.last_network,
+                    hotfix=common.hotfix,
+                    hotfix_date=common.hotfix_date,
+                    subnet=common.subnet,
+                    memo=common.memo,
+                    essential1=common.essential1,
+                    essential2=common.essential2,
+                    essential3=common.essential3,
+                    essential4=common.essential4,
+                    essential5=common.essential5,
+                    mem_use=common.mem_use,
+                    disk_use=common.disk_use,
+                    t_cpu=common.t_cpu,
+                    logged_name_id=common.logged_name_id,
+                    cache_date=common.user_date,
+                    user_date=timezone.now()
+                )
+
+                # Xfactor_Common_Cache 객체를 데이터베이스에 저장합니다.
+                cache.save()
+            except Exception as e:
+                print('nothing')
+                # Xfactor_Common 객체가 존재하지 않는 경우, 빈 필드를 가진 Xfactor_Common_Cache 객체를 생성합니다.
+                cache = Xfactor_Common_Cache()
+                cache.save()
