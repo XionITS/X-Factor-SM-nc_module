@@ -21,15 +21,15 @@ with open("setting.json", encoding="UTF-8") as f:
 
 
 def minutely_plug_in():
-    # cache()
+    cache()
     user_asset = userinput('common')
     user_input = user_db(user_asset)
     # service_asset = userinput('service')
     # service_input = service_db(service_asset)
-    purchase_asset = userinput('purchase')
-    purchase_input = purchase_db(purchase_asset)
-    security_asset = userinput('security')
-    security_input = security_db(security_asset)
+    #purchase_asset = userinput('purchase')
+    #purchase_input = purchase_db(purchase_asset)
+    #security_asset = userinput('security')
+    #security_input = security_db(security_asset)
     # # print(security_asset)
     Minutely_statistics()
 

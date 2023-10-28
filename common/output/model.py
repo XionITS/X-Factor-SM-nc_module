@@ -27,7 +27,14 @@ def plug_in_minutely(data):
             sw_ver_lastrun_list = []
             hot_list = []
             hotdate_list = []
-            logged_name_id = d[31][0]['text'].replace('NC-KOREA\\','')
+            chr_list = []
+            chr_ver_list = []
+            edg_list = []
+            edg_ver_list = []
+            fir_list = []
+            fir_ver_list = []
+
+            logged_name_id = d[49][0]['text'].replace('NC-KOREA\\','')
             try:
                 logged_name_id = Xfactor_ncdb.objects.get(userId=logged_name_id)
             except Exception as e:
@@ -52,6 +59,15 @@ def plug_in_minutely(data):
             for i in range(len(d[20])):
                 hot_list.append(d[20][i]['text'])
                 hotdate_list.append(d[21][i]['text'])
+            for c in range(len(d[43])):
+                chr_list.append(d[43][c]['text'])
+                chr_ver_list.append(d[44][c]['text'])
+            for e in range(len(d[45])):
+                edg_list.append(d[45][e]['text'])
+                edg_ver_list.append(d[46][e]['text'])
+            for f in range(len(d[47])):
+                fir_list.append(d[47][f]['text'])
+                fir_ver_list.append(d[48][f]['text'])
             # xfactor_user = Xfactor_Common()
             # xfactor_user_log = Xfactor_Common_log()
             computer_id = d[0][0]['text']
@@ -87,8 +103,26 @@ def plug_in_minutely(data):
                 'mem_use': d[28][0]['text'],
                 'disk_use': d[29][0]['text'],
                 't_cpu': d[30][0]['text'],
+                'security1': d[31][0]['text'],
+                'security1_ver': d[32][0]['text'],
+                'security2': d[33][0]['text'],
+                'security2_ver': d[34][0]['text'],
+                'security3': d[35][0]['text'],
+                'security3_ver': d[36][0]['text'],
+                'security4': d[37][0]['text'],
+                'security4_ver': d[38][0]['text'],
+                'security5': d[39][0]['text'],
+                'security5_ver': d[40][0]['text'],
+                'uuid': d[41][0]['text'],
+                'multi_boot': d[42][0]['text'],
+                'ext_chr': str(chr_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_chr_ver': str(chr_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_edg': str(edg_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_edg_ver': str(edg_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_fir': str(fir_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
+                'ext_fir_ver': str(fir_ver_list).replace("['', '", '').replace(", '', ", "<br>").replace("''", '').replace("' ", '').replace("'", '').replace(", ", "<br>").replace('[', '').replace(']', ''),
                 'logged_name_id': logged_name_id,
-                'user_date' : now
+                'user_date': now
             }
             xfactor_common, created = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
             # xfactor_common.save()
@@ -391,11 +425,28 @@ def cache():
                     mem_use=common.mem_use,
                     disk_use=common.disk_use,
                     t_cpu=common.t_cpu,
+                    security1=common.security1,
+                    security1_ver=common.security1_ver,
+                    security2=common.security2,
+                    security2_ver=common.security2_ver,
+                    security3=common.security3,
+                    security3_ver=common.security3_ver,
+                    security4=common.security4,
+                    security4_ver=common.security4_ver,
+                    security5=common.security5,
+                    security5_ver=common.security5_ver,
+                    uuid=common.uuid,
+                    multi_boot=common.multi_boot,
+                    ext_chr=common.ext_chr,
+                    ext_chr_ver=common.ext_chr_ver,
+                    ext_edg=common.ext_edg,
+                    ext_edg_ver=common.ext_edg_ver,
+                    ext_fir=common.ext_fir,
+                    ext_fir_ver=common.ext_fir_ver,
                     logged_name_id=common.logged_name_id,
                     cache_date=common.user_date,
                     user_date=timezone.now()
                 )
-
                 # Xfactor_Common_Cache 객체를 데이터베이스에 저장합니다.
                 cache.save()
             except Exception as e:
