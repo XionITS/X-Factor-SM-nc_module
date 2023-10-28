@@ -454,3 +454,4 @@ def cache():
                 # Xfactor_Common 객체가 존재하지 않는 경우, 빈 필드를 가진 Xfactor_Common_Cache 객체를 생성합니다.
                 cache = Xfactor_Common_Cache()
                 cache.save()
+    print("cache success")
