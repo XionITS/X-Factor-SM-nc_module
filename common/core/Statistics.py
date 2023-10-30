@@ -551,6 +551,7 @@ def Daily_statistics() :
 
         #Office 버전별 통계
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
             classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -595,6 +596,7 @@ def Daily_statistics() :
 
         # 업데이트 필요 통계
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(os_simple='Windows'), Q(os_build__gte='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'new'
@@ -607,6 +609,7 @@ def Daily_statistics() :
         daily_statistics_log.save()
         # 업데이트 필요 통계
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(os_simple='Windows'), Q(os_build__lt='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'old'
@@ -622,6 +625,7 @@ def Daily_statistics() :
 
         # online window
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Notebook_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -636,6 +640,7 @@ def Daily_statistics() :
 
         # online mac
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Desktop_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -650,6 +655,7 @@ def Daily_statistics() :
 
         # online other
         user = Xfactor_Daily.objects.filter(user_date__gte=time)
+        #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.exclude(Q(chassistype='Desktop') | Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Other_chassis_online'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -665,6 +671,7 @@ def Daily_statistics() :
         # total window
         seven_days_ago = now - timedelta(days=7)
         user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -679,6 +686,7 @@ def Daily_statistics() :
 
         # total mac
         user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Desktop_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -693,6 +701,8 @@ def Daily_statistics() :
 
         # total other
         user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
+
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Other_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -707,6 +717,7 @@ def Daily_statistics() :
 
         # notebook total
         user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'Notebook'
@@ -720,6 +731,7 @@ def Daily_statistics() :
 
         # desktop total
         user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Desktop_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'Desktop'
@@ -736,6 +748,7 @@ def Daily_statistics() :
         # total window
         seven_days_ago = now - timedelta(days=7)
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Notebook_os_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -750,6 +763,7 @@ def Daily_statistics() :
 
         # total mac
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Desktop_os_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -764,6 +778,7 @@ def Daily_statistics() :
 
         # total other
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'Other_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -778,6 +793,7 @@ def Daily_statistics() :
 
         # notebook total
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'Notebook'
@@ -791,6 +807,7 @@ def Daily_statistics() :
 
         # desktop total
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Desktop_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'Desktop'
