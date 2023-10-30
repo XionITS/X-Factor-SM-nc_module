@@ -36,7 +36,7 @@
       },
       "INPUT" : {
         "API" : {
-          "URL": "https://211.38.3.194:4082",
+          "URL": "https://211.38.3.194:4082/",
           "PATH": {
             "SessionKey": "/api/v2/session/login",
             "Sensor": "/api/v2/result_data/saved_question/",
@@ -45,7 +45,7 @@
           "username": "administrator",
           "password": "xion123!",
           "SensorID": {
-            "COMMON" : "1681",
+            "COMMON" : "1837",
             "SERVICE": "1418",
             "SECURITY": "1300",
             "PURCHASE": "1299",

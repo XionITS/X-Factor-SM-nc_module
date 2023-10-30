@@ -49,8 +49,21 @@ def save_to_postgresql(data):
     # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
     try:
         cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                       , (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (userId) DO UPDATE SET
+                            companyCode=EXCLUDED.companyCode,
+                            userName=EXCLUDED.userName,
+                            userNameEn=EXCLUDED.userNameEn,
+                            email=EXCLUDED.email,
+                            empNo=EXCLUDED.empNo,
+                            joinDate=EXCLUDED.joinDate,
+                            retireDate=EXCLUDED.retireDate,
+                            deptCode=EXCLUDED.deptCode,
+                            deptName=EXCLUDED.deptName,
+                            managerUserName=EXCLUDED.managerUserName,
+                            managerUserId=EXCLUDED.managerUserId;
+                        """
+                        , (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
     except Exception as e:
         print(e)
     conn.commit()
