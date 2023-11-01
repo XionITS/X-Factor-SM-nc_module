@@ -45,7 +45,6 @@ def save_to_postgresql(data):
     }
     conn = psycopg2.connect(**pg_config)
     cursor = conn.cursor()
-
     # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
     try:
         cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
