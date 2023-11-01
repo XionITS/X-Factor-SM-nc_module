@@ -21,9 +21,9 @@ with open("setting.json", encoding="UTF-8") as f:
 
 
 def minutely_plug_in():
-    cache()
     user_asset = userinput('common')
     user_input = user_db(user_asset)
+    cache()
     # service_asset = userinput('service')
     # service_input = service_db(service_asset)
     #purchase_asset = userinput('purchase')
@@ -32,11 +32,11 @@ def minutely_plug_in():
     #security_input = security_db(security_asset)
     # # print(security_asset)
     Minutely_statistics()
+    Daily_statistics()
 
 
 def daily_plug_in():
     user_asset = userinput('daily')
     user_input = daily_db(user_asset)
-    Daily_statistics()
 
 
