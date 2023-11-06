@@ -1,3 +1,5 @@
+import logging
+
 from django.http import HttpResponse
 import os
 
@@ -10,7 +12,7 @@ from ..models import *
 from .preprocessing import plug_in as PROC
 import pytz
 from datetime import datetime, timedelta
-
+logger = logging.getLogger()
 def plug_in_minutely(data):
     try:
         #print(data)
@@ -127,6 +129,7 @@ def plug_in_minutely(data):
             xfactor_common, created = Xfactor_Common.objects.update_or_create(computer_id=computer_id, defaults=defaults)
             # xfactor_common.save()
     except Exception as e:
+        logger.warning('정시 미닛틀리 error' + str(e))
         print(e)
     return HttpResponse("Data saved successfully!")
         # xfactor_user = XFactor_User(
@@ -381,6 +384,7 @@ def plug_in_daily(data):
             xfactor_common_log = Xfactor_Daily.objects.create(computer_id=computer_id, **defaults)
             xfactor_common_log.save()
     except Exception as e:
+        logger.warning('정시 데일리 error' + str(e))
         print(d)
         print(e)
     return HttpResponse("Data saved successfully!")
@@ -451,6 +455,7 @@ def cache():
                 cache.save()
             except Exception as e:
                 print('nothing')
+                logger.warning('정시 캐시 error' + str(e))
                 # Xfactor_Common 객체가 존재하지 않는 경우, 빈 필드를 가진 Xfactor_Common_Cache 객체를 생성합니다.
                 #cache = Xfactor_Common_Cache()
                 #cache.save()
