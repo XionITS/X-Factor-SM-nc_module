@@ -1,3 +1,5 @@
+import logging
+
 import urllib3
 import json
 
@@ -19,11 +21,12 @@ with open("setting.json", encoding="UTF-8") as f:
     SETTING = json.loads(f.read())
 
 
-
+logger = logging.getLogger()
 def minutely_plug_in():
-    user_asset = userinput('common')
-    user_input = user_db(user_asset)
-    cache()
+    try:
+        user_asset = userinput('common')
+        user_input = user_db(user_asset)
+        cache()
     # service_asset = userinput('service')
     # service_input = service_db(service_asset)
     #purchase_asset = userinput('purchase')
@@ -31,9 +34,10 @@ def minutely_plug_in():
     #security_asset = userinput('security')
     #security_input = security_db(security_asset)
     # # print(security_asset)
-    Minutely_statistics()
-    Daily_statistics()
-
+        Minutely_statistics()
+        Daily_statistics()
+    except Exception as e:
+        logger.warning('정시 인풋 error' + str(e))
 
 def daily_plug_in():
     user_asset = userinput('daily')

@@ -387,7 +387,7 @@ def Daily_statistics() :
         utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
         now = utc_now.astimezone(local_tz)
         start_of_today = now.replace(minute=0, second=0, microsecond=0)
-
+        seven_days_ago = now - timedelta(days=7)
         # end_of_today = start_of_today + timedelta(days=1)
 
         now = utc_now.astimezone(local_tz)
@@ -687,7 +687,7 @@ def Daily_statistics() :
         # total window
         seven_days_ago = now - timedelta(days=7)
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -703,7 +703,7 @@ def Daily_statistics() :
 
         # total mac
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -719,7 +719,7 @@ def Daily_statistics() :
 
         # total other
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
 
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
@@ -736,7 +736,7 @@ def Daily_statistics() :
 
         # notebook total
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -750,7 +750,7 @@ def Daily_statistics() :
         daily_statistics_log.save()
 
         # desktop total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
@@ -768,7 +768,7 @@ def Daily_statistics() :
 
         # total window
         seven_days_ago = now - timedelta(days=7)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -783,7 +783,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # total mac
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -798,7 +798,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # total other
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -813,7 +813,7 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # notebook total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -827,7 +827,7 @@ def Daily_statistics() :
         daily_statistics_log.save()
 
         # desktop total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today)
+        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Desktop_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
