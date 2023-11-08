@@ -387,7 +387,7 @@ def Daily_statistics() :
         utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
         now = utc_now.astimezone(local_tz)
         start_of_today = now.replace(minute=0, second=0, microsecond=0)
-        seven_days_ago = now - timedelta(days=7)
+        seven_days_ago = start_of_today - timedelta(days=7)
         # end_of_today = start_of_today + timedelta(days=1)
 
         now = utc_now.astimezone(local_tz)
@@ -685,7 +685,6 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # total window
-        seven_days_ago = now - timedelta(days=7)
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
@@ -767,7 +766,6 @@ def Daily_statistics() :
         #-------------------------------------
 
         # total window
-        seven_days_ago = now - timedelta(days=7)
         user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))

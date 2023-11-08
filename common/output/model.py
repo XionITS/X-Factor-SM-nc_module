@@ -454,7 +454,6 @@ def cache():
                 # Xfactor_Common_Cache 객체를 데이터베이스에 저장합니다.
                 cache.save()
             except Exception as e:
-                print('nothing')
                 logger.warning('정시 캐시 error' + str(e))
                 # Xfactor_Common 객체가 존재하지 않는 경우, 빈 필드를 가진 Xfactor_Common_Cache 객체를 생성합니다.
                 #cache = Xfactor_Common_Cache()
