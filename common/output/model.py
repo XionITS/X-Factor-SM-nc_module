@@ -1,9 +1,11 @@
 import logging
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+from django.db.models import Q
 from django.http import HttpResponse
 import os
-
-from django.utils import timezone
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django
@@ -460,3 +462,37 @@ def cache():
                 #cache.save()
                 continue
     print("cache success")
+
+
+def plug_in_discover():
+    today = timezone.now()
+    today_150_ago = today - timedelta(days=150)
+    today_180_ago = today - timedelta(days=180)
+    discover_asset = Xfactor_Common.objects.filter(
+        Q(user_date__gte=today_180_ago) & Q(user_date__lte=today_150_ago)
+    )
+
+    for d in discover_asset:
+        to_email = d.logged_name_id.email
+        user_id = d.logged_name_id.userId
+
+        msg = MIMEMultipart()
+        msg['From'] = 'skchoi@xionits.com'
+        msg['To'] = to_email
+        msg['Subject'] = "장기 미접속 자산 알람"
+        body = f"{user_id}을 사용하는 컴퓨터에서 경고가 발생하였습니다. 컴퓨터를 체크해 주시길 바랍니다."
+        msg.attach(MIMEText(body, 'plain'))
+
+        try:
+            server = smtplib.SMTP('smtp.office365.com', 587)
+            server.starttls()
+            server.login(msg['From'], "8285sksk!!")  # 이메일 계정 비밀번호
+            server.send_message(msg)
+            server.quit()
+            print(f"메일이 성공적으로 발송되었습니다: {to_email}")
+        except Exception as e:
+            print(f"메일 발송 실패 : {to_email}")
+            logger.warning(f"메일 발송 실패 {to_email}: {e}")
+
+
+

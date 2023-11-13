@@ -4,6 +4,7 @@ import urllib3
 import json
 
 from common.input.UserInput import plug_in as userinput
+from common.output.model import plug_in_discover as discover_db
 from common.output.model import plug_in_minutely as user_db, cache
 from common.output.model import plug_in_daily as daily_db
 #from common.output.model import plug_in_service as service_db
@@ -43,4 +44,5 @@ def daily_plug_in():
     user_asset = userinput('daily')
     user_input = daily_db(user_asset)
 
-
+def discover_plug_in():
+    discover_db()

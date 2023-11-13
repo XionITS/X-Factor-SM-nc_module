@@ -2,6 +2,7 @@ from datetime import datetime
 
 from common.core.Dashboard import daily_plug_in as CTDPI
 from common.core.Dashboard import minutely_plug_in as CTMPI
+from common.core.Dashboard import discover_plug_in as DCPI
 from common.core.Kafka import Kafka_Con, save_to_postgresql
 from common.etc.thread import count as count
 import urllib3
@@ -51,10 +52,22 @@ def kafka():
         logger.warning('Kafka Fail' +str(e))
 
 
+def weekly():
+    try:
+        now = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+        print('\rweekly Alarm Mail', end ="")
+        print(now)
+        DCPI()
+        logger.info('weekly Alarm Mail Succeed 성공')
+    except Exception as e:
+        logger.warning('weekly Fail' + str(e))
+
+
 def main():
     try :
-        CTMPI()
-        CTDPI()
+        #CTMPI()
+        #CTDPI()
+        #DCPI()
         # Kafka_Con()
         logger.info('Tanium Minutely common 성공')
         print('Tanium Minutely common 성공')
@@ -92,6 +105,8 @@ def main():
     sched.add_job(minutely, 'cron', hour='0-23', minute='0', second='10', misfire_grace_time=None)  # seconds='3'
     sched.add_job(daily, 'cron', hour='0-23', minute='10',  second='20', misfire_grace_time=None)
     sched.add_job(kafka, 'cron', hour='16', minute='30',  second='20' , misfire_grace_time=None)
+    sched.add_job(weekly, 'cron', day_of_week='mon', hour=14, minute=53, second=0, misfire_grace_time=None)
+
     logger.info('Start the Scheduling~')
     sched.start()
 
