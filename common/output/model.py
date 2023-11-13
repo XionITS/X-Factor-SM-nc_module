@@ -486,7 +486,7 @@ def plug_in_discover():
         try:
             server = smtplib.SMTP('smtp.office365.com', 587)
             server.starttls()
-            server.login(msg['From'], "8285sksk!!")  # 이메일 계정 비밀번호
+            server.login(msg['From'], "xion123!")  # 이메일 계정 비밀번호
             server.send_message(msg)
             server.quit()
             print(f"메일이 성공적으로 발송되었습니다: {to_email}")
