@@ -526,7 +526,7 @@ def Daily_statistics() :
         hotfix_unnecessery_log.save()
 
         # 150일 미관리 제외 전체 자산
-        date_150_days_ago = now - timedelta(days=7)
+        date_150_days_ago = start_of_today - timedelta(days=7)
         discover_user=Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
         count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -541,7 +541,7 @@ def Daily_statistics() :
 
 
         #150일 미관리자산
-        date_150_days_ago = now - timedelta(days=7)
+        date_150_days_ago = start_of_today - timedelta(days=7)
         discover_user=Xfactor_Common.objects.filter(user_date__lt=date_150_days_ago)
         count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
