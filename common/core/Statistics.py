@@ -390,7 +390,6 @@ def Daily_statistics() :
         seven_days_ago = start_of_today - timedelta(days=7)
         # end_of_today = start_of_today + timedelta(days=1)
 
-        now = utc_now.astimezone(local_tz)
         time = now - timedelta(minutes=60)
 
         #user = Xfactor_Common.objects.filter(user_date__gte=time)
@@ -527,7 +526,7 @@ def Daily_statistics() :
         hotfix_unnecessery_log.save()
 
         # 150일 미관리 제외 전체 자산
-        date_150_days_ago = now - timedelta(days=150)
+        date_150_days_ago = now - timedelta(days=7)
         discover_user=Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
         count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -542,7 +541,7 @@ def Daily_statistics() :
 
 
         #150일 미관리자산
-        date_150_days_ago = now - timedelta(days=150)
+        date_150_days_ago = now - timedelta(days=7)
         discover_user=Xfactor_Common.objects.filter(user_date__lt=date_150_days_ago)
         count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -838,6 +837,26 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
 
+        #보안프로그램 개수
+        count_list = []
+        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=seven_days_ago)
+        security_program = ['cososys', 'symantec', 'cbr', 'cbc', 'mcafee']
+        cososys_count = user.filter(security1='True ').count()
+        symantec_count = user.filter(security2='True ').count()
+        cbr_count = user.filter(security3='True ').count()
+        cbc_count = user.filter(security4='True ').count()
+        mcafee_count = user.filter(security5='True ').count()
+        count_list = cososys_count, symantec_count, cbr_count, cbc_count, mcafee_count
+        for i, count_data in enumerate(count_list):
+            classification = 'security_count'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            item = security_program[i]
+            item_count = count_data
+            daily_statistics_log = Daily_Statistics_log(
+                classification=classification,
+                item=item,
+                item_count=item_count
+            )
+            daily_statistics_log.save()
 
     except Exception as e :
         logger.warning('Daily error' + str(e))
