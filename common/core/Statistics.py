@@ -5,7 +5,7 @@
 # django.setup()
 import logging
 from ..models import *
-from django.db.models import Count, Q, F
+from django.db.models import Count, Q, F, Max
 import pytz
 import time
 from datetime import datetime, timedelta, timezone
@@ -526,9 +526,24 @@ def Daily_statistics() :
         hotfix_unnecessery_log.save()
 
         # 150일 미관리 제외 전체 자산
-        date_150_days_ago = start_of_today - timedelta(days=7)
-        discover_user=Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
-        count = discover_user.count()
+        date_150_days_ago = start_of_today - timedelta(days=150)
+
+        # 중복된 mac_address를 가진 레코드를 필터링합니다.
+        filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
+        # 가장 최근 날짜인 레코드를 선택합니다.
+        latest_records = []
+        for item in filtered_user:
+            mac_address = item['mac_address']
+            max_user_date = item['max_user_date']
+            record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
+            if record:
+                latest_records.append(record)
+        count = sum(1 for record in latest_records if record.user_date >= date_150_days_ago)
+
+        # 예전코드
+        # date_150_days_ago = start_of_today - timedelta(days=7)
+        # discover_user=Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
+        # count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
 
         item = '150_day'
@@ -541,9 +556,26 @@ def Daily_statistics() :
 
 
         #150일 미관리자산
-        date_150_days_ago = start_of_today - timedelta(days=7)
-        discover_user=Xfactor_Common.objects.filter(user_date__lt=date_150_days_ago)
-        count = discover_user.count()
+        date_150_days_ago = start_of_today - timedelta(days=150)
+
+        # 중복된 mac_address를 가진 레코드를 필터링합니다.
+        filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
+        # 가장 최근 날짜인 레코드를 선택합니다.
+        latest_records = []
+        for item in filtered_user:
+            mac_address = item['mac_address']
+            max_user_date = item['max_user_date']
+            record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
+            if record:
+                latest_records.append(record)
+        #print(latest_records)
+        count = sum(1 for record in latest_records if record.user_date < date_150_days_ago)
+
+
+        # 예전코드
+        # date_150_days_ago = start_of_today - timedelta(days=7)
+        # discover_user = Xfactor_Common.objects.filter(user_date__lt=date_150_days_ago)
+        # count = discover_user.count()
         classification = 'discover'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = '150_day_ago'
 

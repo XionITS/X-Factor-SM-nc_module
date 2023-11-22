@@ -10,6 +10,10 @@
     "PROGRESSBAR" : "False",
     "TEST" : {
       "DAILY" : "false"
+    },
+    "MAIL": {
+      "ID": "djlee@xionits.com",
+      "PW": "password!"
     }
   },
   "CORE" : {

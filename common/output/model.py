@@ -1,3 +1,4 @@
+import json
 import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -465,34 +466,59 @@ def cache():
 
 
 def plug_in_discover():
-    today = timezone.now()
+    with open("setting.json", encoding="UTF-8") as f:
+        SETTING = json.loads(f.read())
+    Mail_Id = SETTING['PROJECT']['MAIL']['ID']
+    Mail_Pw = SETTING['PROJECT']['MAIL']['PW']
+
+
+    local_tz = pytz.timezone('Asia/Seoul')
+    today = timezone.now().astimezone(local_tz)
     today_150_ago = today - timedelta(days=150)
-    today_180_ago = today - timedelta(days=180)
+    today_180_ago = today_150_ago - timedelta(days=30)
+    #전체 mac_address 구하기
+    all_mac_addresses = set(Xfactor_Common.objects.filter(user_date__gte=today_150_ago).values_list('mac_address', flat=True))
+    
     discover_asset = Xfactor_Common.objects.filter(
         Q(user_date__gte=today_180_ago) & Q(user_date__lte=today_150_ago)
     )
+    #discover_asset = discover_asset
+    manager_id = Mail_Id
+    manager_pw = Mail_Pw
 
     for d in discover_asset:
         to_email = d.logged_name_id.email
         user_id = d.logged_name_id.userId
+        mac_address = d.mac_address
 
         msg = MIMEMultipart()
-        msg['From'] = 'skchoi@xionits.com'
+        msg['From'] = manager_id
         msg['To'] = to_email
         msg['Subject'] = "장기 미접속 자산 알람"
-        body = f"{user_id}을 사용하는 컴퓨터에서 경고가 발생하였습니다. 컴퓨터를 체크해 주시길 바랍니다."
-        msg.attach(MIMEText(body, 'plain'))
+        days_since_first_date = (today - d.user_date).days
+        if days_since_first_date in (30, 15, 8, 4, 1) :
+            try:
+                if mac_address in all_mac_addresses:
+                    #print(f"이 자산은 중복됨 {mac_address}")
+                    continue
+                # print(user_id)
+                # print(days_since_first_date)
+                # print(to_email)
+                # print("-----------------------------")
 
-        try:
-            server = smtplib.SMTP('smtp.office365.com', 587)
-            server.starttls()
-            server.login(msg['From'], "xion123!")  # 이메일 계정 비밀번호
-            server.send_message(msg)
-            server.quit()
-            print(f"메일이 성공적으로 발송되었습니다: {to_email}")
-        except Exception as e:
-            print(f"메일 발송 실패 : {to_email}")
-            logger.warning(f"메일 발송 실패 {to_email}: {e}")
+                body = f"{user_id}을 사용하는 컴퓨터가 미관리중입니다. 컴퓨터를 체크해 주시길 바랍니다."
+                msg.attach(MIMEText(body, 'plain'))
+
+                server = smtplib.SMTP('smtp.office365.com', 587)
+                server.starttls()
+                server.login(msg['From'], manager_pw)  # 이메일 계정 비밀번호
+                server.send_message(msg)
+                server.quit()
+                #print(f"메일이 성공적으로 발송되었습니다: {to_email}")
+
+            except Exception as e:
+                #print(f"메일 발송 실패 : {e}")
+                logger.warning(f"메일 발송 실패 {to_email}: {e}")
 
 
 
