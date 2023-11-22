@@ -496,7 +496,8 @@ def plug_in_discover():
         msg['To'] = to_email
         msg['Subject'] = "장기 미접속 자산 알람"
         days_since_first_date = (today - d.user_date).days
-        if days_since_first_date in (30, 15, 8, 4, 1) :
+        #print(days_since_first_date)
+        if days_since_first_date in (150, 165, 172, 176, 179) :
             try:
                 if mac_address in all_mac_addresses:
                     #print(f"이 자산은 중복됨 {mac_address}")
