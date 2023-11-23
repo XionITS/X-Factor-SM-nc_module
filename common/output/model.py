@@ -465,61 +465,163 @@ def cache():
     print("cache success")
 
 
+# def plug_in_discover():
+#     with open("setting.json", encoding="UTF-8") as f:
+#         SETTING = json.loads(f.read())
+#     Mail_Id = SETTING['PROJECT']['MAIL']['ID']
+#     Mail_Pw = SETTING['PROJECT']['MAIL']['PW']
+#
+#
+#     local_tz = pytz.timezone('Asia/Seoul')
+#     today = timezone.now().astimezone(local_tz)
+#     today_150_ago = today - timedelta(days=10)
+#     today_180_ago = today_150_ago - timedelta(days=10)
+#     #전체 mac_address 구하기
+#     all_mac_addresses = set(Xfactor_Common.objects.filter(user_date__gte=today_150_ago).values_list('mac_address', flat=True))
+#
+#     discover_asset = Xfactor_Common.objects.filter(
+#         Q(user_date__gte=today_180_ago) & Q(user_date__lte=today_150_ago)
+#     )
+#     #discover_asset = discover_asset
+#     manager_id = Mail_Id
+#     manager_pw = Mail_Pw
+#
+#     for d in discover_asset:
+#         to_email = d.logged_name_id.email
+#         user_id = d.logged_name_id.userId
+#         user_name = d.logged_name_id.userName
+#         mac_address = d.mac_address
+#         ip_address = d.ip_address
+#         computer_name = d.computer_name
+#
+#         msg = MIMEMultipart()
+#         msg['From'] = manager_id
+#         msg['To'] = to_email
+#         msg['Subject'] = "장기 미접속 자산 알람"
+#         days_since_first_date = (today - d.user_date).days
+#         #print(days_since_first_date)
+#         if days_since_first_date in (150, 165, 172, 176, 179,19,17,16,15,14,13,12,11) :
+#             try:
+#                 if mac_address in all_mac_addresses:
+#                     #print(f"이 자산은 중복됨 {mac_address}")
+#                     continue
+#                 # print(user_id)
+#                 # print(days_since_first_date)
+#                 # print(to_email)
+#                 # print("-----------------------------")
+#
+#
+#                 body = ""
+#                 body += "<font face='Malgun Gothic' size='4'>안녕하세요.</font><br>"
+#                 body += "<font face='Malgun Gothic' size='4'>"
+#                 body += f"{user_name}님의 장비가 장기간 네트워크 연결이 안되고 있어 안내메일 드립니다.<br>"
+#                 body += "180일동안 네트워크 연결이 없으면 (외부인터넷 포함) 장비등록이 풀려 재택근무에 사용을 할 수 없습니다.<br>"
+#                 body += "재등록 과정을 거쳐야하는 불편이 있을 수 있으니<br>"
+#                 body += "180일이 지나기전에 네트워크에 접속하여 기기 상태를 확인해주세요.<br><br>"
+#
+#                 # HTML 테이블 생성
+#                 body += "<table border='1' cellpadding='5'>"
+#                 body += "<tr><th>항목</th><th>내용</th></tr>"
+#                 body += f"<tr><td>사용자계정</td><td>{user_id}</td></tr>"
+#                 body += f"<tr><td>장비명</td><td>{computer_name}</td></tr>"
+#                 body += f"<tr><td>IP주소</td><td>{ip_address}</td></tr>"
+#                 body += f"<tr><td>미사용일수</td><td>{days_since_first_date}일</td></tr>"
+#                 body += "</table>"
+#
+#                 body += "</font><br><font face='Malgun Gothic' size='4'>문의사항은 스마트워크 DL로 부탁드립니다.</font>"
+#                 body += "</font><br><font face='Malgun Gothic' size='4'>감사합니다.</font>"
+#                 msg.attach(MIMEText(body, 'html'))
+#
+#                 server = smtplib.SMTP('smtp.office365.com', 587)
+#                 server.starttls()
+#                 server.login(msg['From'], manager_pw)  # 이메일 계정 비밀번호
+#                 server.send_message(msg)
+#                 server.quit()
+#                 print(f"메일이 성공적으로 발송되었습니다: {to_email}")
+#
+#             except Exception as e:
+#                 #print(f"메일 발송 실패 : {e}")
+#                 logger.warning(f"메일 발송 실패 {to_email}: {e}")
+
+###NC용 메일발송기능
 def plug_in_discover():
     with open("setting.json", encoding="UTF-8") as f:
         SETTING = json.loads(f.read())
     Mail_Id = SETTING['PROJECT']['MAIL']['ID']
     Mail_Pw = SETTING['PROJECT']['MAIL']['PW']
 
-
     local_tz = pytz.timezone('Asia/Seoul')
     today = timezone.now().astimezone(local_tz)
     today_150_ago = today - timedelta(days=150)
     today_180_ago = today_150_ago - timedelta(days=30)
-    #전체 mac_address 구하기
+    # 전체 mac_address 구하기
     all_mac_addresses = set(Xfactor_Common.objects.filter(user_date__gte=today_150_ago).values_list('mac_address', flat=True))
-    
+
     discover_asset = Xfactor_Common.objects.filter(
         Q(user_date__gte=today_180_ago) & Q(user_date__lte=today_150_ago)
     )
-    #discover_asset = discover_asset
-    manager_id = Mail_Id
+    # discover_asset = discover_asset
+    # manager_id = Mail_Id
+    manager_id = 'smartwork@ncsoft.com'
     manager_pw = Mail_Pw
 
     for d in discover_asset:
         to_email = d.logged_name_id.email
+        # to_email = 'handlake2k@ncsoft.com'
         user_id = d.logged_name_id.userId
+        user_name = d.logged_name_id.userName
         mac_address = d.mac_address
+        ip_address = d.ip_address
+        computer_name = d.computer_name
 
         msg = MIMEMultipart()
         msg['From'] = manager_id
         msg['To'] = to_email
         msg['Subject'] = "장기 미접속 자산 알람"
         days_since_first_date = (today - d.user_date).days
-        #print(days_since_first_date)
-        if days_since_first_date in (150, 165, 172, 176, 179) :
+        # print(days_since_first_date)
+        if days_since_first_date in (150, 165, 172, 176, 179):
             try:
                 if mac_address in all_mac_addresses:
-                    #print(f"이 자산은 중복됨 {mac_address}")
+                    # print(f"이 자산은 중복됨 {mac_address}")
                     continue
                 # print(user_id)
                 # print(days_since_first_date)
                 # print(to_email)
                 # print("-----------------------------")
 
-                body = f"{user_id}을 사용하는 컴퓨터가 미관리중입니다. 컴퓨터를 체크해 주시길 바랍니다."
-                msg.attach(MIMEText(body, 'plain'))
+                # body = f"{user_id}을 사용하는 컴퓨터가 미관리중입니다. 컴퓨터를 체크해 주시길 바랍니다."
+                body = ""
+                body += "<font face='Malgun Gothic' size='4'>안녕하세요.</font><br><br>"
+                body += "<font face='Malgun Gothic' size='4'>"
+                body += f"{user_name}님의 장비가 장기간 네트워크 연결이 안되고 있어 안내메일 드립니다.<br>"
+                body += "180일동안 네트워크 연결이 없으면 (외부인터넷 포함) 장비등록이 풀려 재택근무에 사용을 할 수 없습니다.<br>"
+                body += "재등록 과정을 거쳐야하는 불편이 있을 수 있으니<br>"
+                body += "180일이 지나기전에 네트워크에 접속하여 기기 상태를 확인해주세요.<br><br>"
 
-                server = smtplib.SMTP('smtp.office365.com', 587)
-                server.starttls()
-                server.login(msg['From'], manager_pw)  # 이메일 계정 비밀번호
-                server.send_message(msg)
+                # HTML 테이블 생성
+                body += "<table border='1' cellpadding='5'>"
+                body += "<tr><th>항목</th><th>내용</th></tr>"
+                body += f"<tr><td>사용자계정</td><td>{user_id}</td></tr>"
+                body += f"<tr><td>장비명</td><td>{computer_name}</td></tr>"
+                body += f"<tr><td>IP주소</td><td>{ip_address}</td></tr>"
+                body += f"<tr><td>미사용일수</td><td>{days_since_first_date}일</td></tr>"
+                body += "</table>"
+
+                body += "</font><br><font face='Malgun Gothic' size='4'>문의사항은 스마트워크 DL로 부탁드립니다.</font>"
+                body += "</font><br><font face='Malgun Gothic' size='4'>감사합니다.</font>"
+                msg.attach(MIMEText(body, 'html'))
+
+                # server = smtplib.SMTP('smtp.office365.com', 587)
+                # server.starttls()
+                # server.login(msg['From'], manager_pw)  # 이메일 계정 비밀번호
+                # server.send_message(msg)
+
+                server = smtplib.SMTP('172.20.0.126', 25)
+                server.sendmail(msg['From'], to_email, msg.as_string())
                 server.quit()
-                #print(f"메일이 성공적으로 발송되었습니다: {to_email}")
+                # print(f"메일이 성공적으로 발송되었습니다: {to_email}")
 
             except Exception as e:
-                #print(f"메일 발송 실패 : {e}")
+                # print(f"메일 발송 실패 : {e}")
                 logger.warning(f"메일 발송 실패 {to_email}: {e}")
-
-
-

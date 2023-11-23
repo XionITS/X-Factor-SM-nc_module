@@ -532,14 +532,14 @@ def Daily_statistics() :
         filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
         # 가장 최근 날짜인 레코드를 선택합니다.
         latest_records = []
-        for item in filtered_user:
-            mac_address = item['mac_address']
-            max_user_date = item['max_user_date']
-            record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
-            if record:
-                latest_records.append(record)
-        count = sum(1 for record in latest_records if record.user_date >= date_150_days_ago)
-
+        # for item in filtered_user:
+        #     mac_address = item['mac_address']
+        #     max_user_date = item['max_user_date']
+        #     record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
+        #     if record:
+        #         latest_records.append(record)
+        # count = sum(1 for record in latest_records if record.user_date >= date_150_days_ago)
+        count=0
         # 예전코드
         # date_150_days_ago = start_of_today - timedelta(days=7)
         # discover_user=Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
@@ -557,19 +557,27 @@ def Daily_statistics() :
 
         #150일 미관리자산
         date_150_days_ago = start_of_today - timedelta(days=150)
+        date_180_days_ago = start_of_today - timedelta(days=180)
 
-        # 중복된 mac_address를 가진 레코드를 필터링합니다.
-        filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
-        # 가장 최근 날짜인 레코드를 선택합니다.
-        latest_records = []
-        for item in filtered_user:
-            mac_address = item['mac_address']
-            max_user_date = item['max_user_date']
-            record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
-            if record:
-                latest_records.append(record)
-        #print(latest_records)
-        count = sum(1 for record in latest_records if record.user_date < date_150_days_ago)
+        # # 중복된 mac_address를 가진 레코드를 필터링합니다.
+        # filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
+        # # 가장 최근 날짜인 레코드를 선택합니다.
+        # latest_records = []
+        # for item in filtered_user:
+        #     mac_address = item['mac_address']
+        #     max_user_date = item['max_user_date']
+        #     record = Xfactor_Common.objects.filter(mac_address=mac_address, user_date=max_user_date).first()
+        #     if record:
+        #         latest_records.append(record)
+        # count = sum(1 for record in latest_records if date_180_days_ago <= record.user_date < date_150_days_ago)
+
+        filtered_records = Xfactor_Common.objects.filter(user_date__gt=date_180_days_ago, user_date__lte=date_150_days_ago)
+        base = Xfactor_Common.objects.filter(user_date__gte=date_150_days_ago)
+        base_mac_addresses = base.values_list('mac_address', flat=True)
+        user = filtered_records.exclude(mac_address__in=base_mac_addresses)
+
+        count = user.count()
+        #print(count)
 
 
         # 예전코드
