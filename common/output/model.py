@@ -552,7 +552,8 @@ def plug_in_discover():
 
     local_tz = pytz.timezone('Asia/Seoul')
     today = timezone.now().astimezone(local_tz)
-    today_150_ago = today - timedelta(days=150)
+    discover_current = Daily_Statistics_log.objects.filter(item='discover_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
+    today_150_ago = today - timedelta(days=discover_current)
     today_180_ago = today_150_ago - timedelta(days=30)
     # 전체 mac_address 구하기
     all_mac_addresses = set(Xfactor_Common.objects.filter(user_date__gte=today_150_ago).values_list('mac_address', flat=True))
@@ -579,8 +580,8 @@ def plug_in_discover():
         msg['To'] = to_email
         msg['Subject'] = "장기 미접속 자산 알람"
         days_since_first_date = (today - d.user_date).days
-        # print(days_since_first_date)
-        if days_since_first_date in (150, 165, 172, 176, 179):
+
+        if days_since_first_date in (discover_current, discover_current+15 , discover_current+22 , discover_current+26, discover_current+29):
             try:
                 if mac_address in all_mac_addresses:
                     # print(f"이 자산은 중복됨 {mac_address}")

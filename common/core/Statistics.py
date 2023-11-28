@@ -490,7 +490,10 @@ def Daily_statistics() :
         #보안패치 필요여부 모듈
         nec_item = 0
         unnec_item = 0
-        three_months_ago = datetime.now() - timedelta(days=90)
+        hot_current = Daily_Statistics_log.objects.filter(item='hot_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
+
+
+        three_months_ago = datetime.now() - timedelta(days=hot_current)
         users = user.values('hotfix_date')
         for user in users:
             date_strings=user['hotfix_date'].split('<br> ')
@@ -556,8 +559,9 @@ def Daily_statistics() :
 
 
         #150일 미관리자산
-        date_150_days_ago = start_of_today - timedelta(days=150)
-        date_180_days_ago = start_of_today - timedelta(days=180)
+        discover_current = Daily_Statistics_log.objects.filter(item='discover_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
+        date_150_days_ago = start_of_today - timedelta(days=discover_current)
+        date_180_days_ago = date_150_days_ago - timedelta(days=30)
 
         # # 중복된 mac_address를 가진 레코드를 필터링합니다.
         # filtered_user = Xfactor_Common.objects.values('mac_address').annotate(max_user_date=Max('user_date')).distinct()
@@ -646,7 +650,8 @@ def Daily_statistics() :
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
-        users = user.filter(Q(os_simple='Windows'), Q(os_build__gte='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        ver_current = Daily_Statistics_log.objects.filter(item='ver_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__gte=ver_current)).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'new'
         item_count = sum(item['count'] for item in users)
@@ -660,7 +665,7 @@ def Daily_statistics() :
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
-        users = user.filter(Q(os_simple='Windows'), Q(os_build__lt='19044')).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        users = user.filter(Q(os_simple='Windows'), Q(os_build__lt=ver_current)).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'old'
         item_count = sum(item['count'] for item in users)

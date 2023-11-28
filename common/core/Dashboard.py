@@ -7,7 +7,8 @@ from common.input.UserInput import plug_in as userinput
 from common.output.model import plug_in_discover as discover_db
 from common.output.model import plug_in_minutely as user_db, cache
 from common.output.model import plug_in_daily as daily_db
-#from common.output.model import plug_in_service as service_db
+from common.output.db import before as dash_setting_before
+from common.output.db import after as dash_setting_after
 from common.output.model import plug_in_purchase as purchase_db
 from common.output.model import plug_in_security as security_db
 from common.core.Statistics import Minutely_statistics, Daily_statistics
@@ -25,6 +26,7 @@ with open("setting.json", encoding="UTF-8") as f:
 logger = logging.getLogger()
 def minutely_plug_in():
     try:
+        dash_setting_before()
         user_asset = userinput('common')
         user_input = user_db(user_asset)
         cache()
@@ -37,6 +39,7 @@ def minutely_plug_in():
     # # print(security_asset)
         Minutely_statistics()
         Daily_statistics()
+        dash_setting_after()
     except Exception as e:
         logger.warning('정시 인풋 error' + str(e))
 
