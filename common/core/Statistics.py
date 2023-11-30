@@ -648,12 +648,12 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # 업데이트 필요 통계
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
 
         ver_current = Daily_Statistics_log.objects.filter(item='ver_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
-        users = user.annotate(os_build_cast=Cast('os_build', BigIntegerField())).filter(os_simple='Windows', os_build_cast__gt=ver_current).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        users = user.annotate(os_build_cast=Cast('os_build', BigIntegerField())).filter(os_simple='Windows', os_build_cast__gte=ver_current).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'new'
         item_count = sum(item['count'] for item in users)
@@ -664,10 +664,10 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
         # 업데이트 필요 통계
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
-        users = user.annotate(os_build_cast=Cast('os_build', BigIntegerField())).filter(os_simple='Windows', os_build_cast__lte=ver_current).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
+        users = user.annotate(os_build_cast=Cast('os_build', BigIntegerField())).filter(os_simple='Windows', os_build_cast__lt=ver_current).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
         classification = 'os_version_up'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
         item = 'old'
         item_count = sum(item['count'] for item in users)
