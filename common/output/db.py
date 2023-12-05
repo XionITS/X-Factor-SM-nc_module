@@ -28,8 +28,10 @@ def before():
 
         # 아이템 값 확인 쿼리 실행
         items = ["discover_module", "discover_web", "ver_module", "ver_web", "hot_module", "hot_web"]
-        query = "SELECT item, item_count FROM common_daily_statistics_log WHERE item IN %s"
+        #query = "SELECT item, item_count FROM common_daily_statistics_log WHERE item IN %s"
         #query = "SELECT item, item_count FROM common_daily_statistics_log WHERE item IN %s ORDER BY statistics_collection_date DESC LIMIT 1"
+
+        query = "SELECT item, item_count FROM common_daily_statistics_log WHERE (item, statistics_collection_date) IN (SELECT item, MAX(statistics_collection_date) AS max_date FROM common_daily_statistics_log WHERE item IN %s GROUP BY item)"
 
         Cur.execute(query, (tuple(items),))
 

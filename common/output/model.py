@@ -560,7 +560,7 @@ def plug_in_discover():
 
     discover_asset = Xfactor_Common.objects.filter(
         Q(user_date__gte=today_180_ago) & Q(user_date__lte=today_150_ago)
-    )
+    ).exclude(os_simple='Mac')
     # discover_asset = discover_asset
     # manager_id = Mail_Id
     manager_id = 'smartwork@ncsoft.com'

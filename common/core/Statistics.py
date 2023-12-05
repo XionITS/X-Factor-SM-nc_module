@@ -104,9 +104,9 @@ def Minutely_statistics() :
         vCount = 0
         for user_data in users:
             if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21',  '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22'\
-                , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
+                , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21', '사내망']:
                 inCount += user_data['count']
-            elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
+            elif user_data['subnet'] in ['172.21.224.0/20', 'VPN']:
                 vCount += user_data['count']
             else :
                 outCount += user_data['count']
@@ -218,7 +218,13 @@ def Minutely_statistics() :
         user = Xfactor_Common.objects.filter(user_date__gte=time)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
-            classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            classification = None  # 초기값 설정
+            if user_data['essential5'].startswith('Office'):
+                classification = 'office_ver'
+            else:
+                #print("aa")
+                classification = 'office_ver_mac'
+            #classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
             item_count = user_data['count']
             daily_statistics, created = Daily_Statistics.objects.get_or_create(
@@ -452,11 +458,11 @@ def Daily_statistics() :
         unCount = 0
         for user_data in users:
             if user_data['subnet'] in ['172.18.16.0/21', '172.18.24.0/21', '172.18.32.0/22', '172.18.40.0/22', '172.18.48.0/21', '172.18.56.0/22', '172.18.64.0/21', '172.18.72.0/22' \
-                    , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21']:
+                    , '172.18.88.0/21', '172.18.96.0/21', '172.18.104.0/22', '172.20.16.0/21', '172.20.40.0/22', '172.20.48.0/21', '172.20.56.0/21', '172.20.64.0/22', '172.20.68.0/22', '172.20.78.0/23', '172.20.8.0/21', '사내망']:
                 inCount += user_data['count']
-            elif user_data['subnet'] in ['172.21.224.0/20', '192.168.0.0/20']:
+            elif user_data['subnet'] in ['172.21.224.0/20', 'VPN']:
                 vCount += user_data['count']
-            elif user_data['subnet'] in ['unconfirmed', '']:
+            elif user_data['subnet'] in ['unconfirmed', '' , 'Other']:
                 unCount += user_data['count']
             else:
                 outCount += user_data['count']
@@ -605,7 +611,12 @@ def Daily_statistics() :
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
-            classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
+            classification = None  # 초기값 설정
+            if user_data['essential5'].startswith('Office'):
+                classification = 'office_ver'
+            else:
+                classification = 'office_ver_mac'
+            #classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
             item_count = user_data['count']
             daily_statistics_log = Daily_Statistics_log(
