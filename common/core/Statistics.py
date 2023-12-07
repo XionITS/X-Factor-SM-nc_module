@@ -417,7 +417,7 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
-
+        print("os simple시작")
         #os_type OS종류
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
@@ -447,7 +447,7 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
-
+        print("대역별 시작")
         #subnet 대역별
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
@@ -493,7 +493,7 @@ def Daily_statistics() :
             item_count=unCount
         )
         daily_statistics_log.save()
-
+        print("보안패치 시작")
         #보안패치 필요여부 모듈
         nec_item = 0
         unnec_item = 0
@@ -534,7 +534,7 @@ def Daily_statistics() :
             item_count=unnec_item
         )
         hotfix_unnecessery_log.save()
-
+        print("미관리 시작")
         # 150일 미관리 제외 전체 자산
         date_150_days_ago = start_of_today - timedelta(days=150)
 
@@ -605,7 +605,7 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
 
-
+        print("오피스 시작")
         #Office 버전별 통계
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
@@ -625,7 +625,7 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
-
+        print("CPU 시작")
         # cpu 사용량
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
@@ -640,7 +640,7 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
-
+        print("os 6개 시작")
         # os버전별 자산 현황
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
@@ -657,7 +657,7 @@ def Daily_statistics() :
                 item_count=item_count
             )
             daily_statistics_log.save()
-
+        print("업데이트 핫픽스 시작")
         # 업데이트 필요 통계
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
@@ -689,8 +689,7 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
 
-
-
+        print("구분값  시작")
         # online window
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
@@ -895,6 +894,7 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
 
+        print("필수보안프로그렘  시작")
         #보안프로그램 개수
         count_list = []
         user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=seven_days_ago)

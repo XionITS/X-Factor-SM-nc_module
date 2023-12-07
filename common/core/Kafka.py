@@ -37,16 +37,47 @@ import psycopg2
 def save_to_postgresql(data):
     # PostgreSQL 연결 설정
     pg_config = {
-        'dbname': 'ncsm',
+        'dbname': 'ncsm_dev',
         'user': 'postgres',
         'password': 'psql',
-        'host': '172.20.161.64',
+        'host': '172.20.161.129',
         'port': '5432'
     }
     conn = psycopg2.connect(**pg_config)
     cursor = conn.cursor()
     # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
     try:
+        user_id = data.get('userId')
+        user_name = data.get('userName')
+
+        # userId가 이미 있는지 확인
+        cursor.execute('SELECT COUNT(*) FROM common_xfactor_ncdb WHERE "userId" = %s', (user_id,))
+        result = cursor.fetchone()
+
+        # userId가 없는 경우: 새로운 레코드를 추가
+        if result[0] == 0:
+            cursor.execute("""
+                INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (data.get('companyCode'), user_name, data.get('userNameEn'), user_id, data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
+        elif result[0] == 1:
+            # userId가 있는 경우: common_xfactor_ncdb 테이블의 레코드를 업데이트
+            cursor.execute("""
+                UPDATE common_xfactor_ncdb
+                SET "userName" = %s,
+                    "userNameEn" = %s,
+                    "email" = %s,
+                    "empNo" = %s,
+                    "joinDate" = %s,
+                    "retireDate" = %s,
+                    "deptCode" = %s,
+                    "deptName" = %s,
+                    "managerUserName" = %s,
+                    "managerUserId" = %s,
+                    "managerEmpNo" = %s
+                WHERE "userId" = %s
+            """, (user_name, data.get('userNameEn'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo'), user_id))
+
         # today = date.today()
     #
     #     cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
@@ -67,14 +98,44 @@ def save_to_postgresql(data):
     #                       "managerUserId" = EXCLUDED."managerUserId",
     #                       "managerEmpNo" = EXCLUDED."managerEmpNo" """,
     #                    (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo'), today))
-        cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                        , (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
+    #     cursor.execute("""INSERT INTO common_xfactor_ncdb ("companyCode", "userName", "userNameEn", "userId", "email", "empNo", "joinDate", "retireDate", "deptCode", "deptName", "managerUserName", "managerUserId", "managerEmpNo")
+    #                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    #                     , (data.get('companyCode'), data.get('userName'), data.get('userNameEn'), data.get('userId'), data.get('email'), data.get('empNo'), data.get('joinDate'), data.get('retireDate'), data.get('deptCode'), data.get('deptName'), data.get('managerUserName'), data.get('managerUserId'), data.get('managerEmpNo')))
     except Exception as e:
         print(e)
     conn.commit()
     cursor.close()
     conn.close()
+
+
+
+def retire(messages):
+    pg_config = {
+        'dbname': 'ncsm_dev',
+        'user': 'postgres',
+        'password': 'psql',
+        'host': '172.20.161.129',
+        'port': '5432'
+    }
+    conn = psycopg2.connect(**pg_config)
+    cursor = conn.cursor()
+    # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
+    # 데이터베이스에서 모든 userId 가져오기
+    cursor.execute("SELECT userId FROM common_xfactor_ncdb")
+    all_user_ids = cursor.fetchall()
+
+    for user_id in all_user_ids:
+        if user_id[0] not in messages:
+            print(user_id[0])
+            cursor.execute("""
+                    UPDATE common_xfactor_ncdb
+                    SET "userName" = "userName" || ' 퇴사자'
+                    WHERE "userId" = %s
+                """, (user_id[0],))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
 
 
 def Kafka_Con():
@@ -113,7 +174,7 @@ def Kafka_Con():
     consumer = Consumer(kafka_config)
     consumer.subscribe([kafka_topic])
     print("Kafka 연결3")
-
+    messages = []
     while True:
         msg = consumer.poll(10.0)
         if msg is None:
@@ -131,7 +192,8 @@ def Kafka_Con():
             payload = message['payload']
 
             save_to_postgresql(payload)
-
+            messages.append(payload['userId'])
+    retire(messages)
     print("Kafka 연결4")
     # 소비자 종료
     consumer.close()
