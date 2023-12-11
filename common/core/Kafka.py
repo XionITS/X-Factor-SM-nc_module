@@ -117,28 +117,39 @@ def retire(messages):
         'host': '172.20.161.129',
         'port': '5432'
     }
+    # pg_config = {
+    #     'dbname': 'ncsm',
+    #     'user': 'postgres',
+    #     'password': 'psql',
+    #     'host': 'localhost',
+    #     'port': '5432'
+    # }
     conn = psycopg2.connect(**pg_config)
     cursor = conn.cursor()
     # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
     # 데이터베이스에서 모든 userId 가져오기
-    cursor.execute("SELECT userId FROM common_xfactor_ncdb")
+    cursor.execute('SELECT "userId" FROM common_xfactor_ncdb')
     all_user_ids = cursor.fetchall()
+
 
     for user_id in all_user_ids:
         if user_id[0] not in messages:
             print(user_id[0])
             cursor.execute("""
                     UPDATE common_xfactor_ncdb
-                    SET "userName" = "userName" || ' 퇴사자'
+                    SET "userName" = "userName" || '(퇴사자)'
                     WHERE "userId" = %s
                 """, (user_id[0],))
             conn.commit()
-            cursor.close()
-            conn.close()
+        else :
+            continue
 
 
 
 def Kafka_Con():
+    # messages = ['user','root','DESKTOP-VVFTLAT\win10-3','DESKTOP-91AR93O\sec','YJKIM\Kim','SKCHOI\sk']
+    # print(messages)
+    # retire(messages)
     # pg_config = {
     #     'dbname': 'ncsm',
     #     'user': 'postgres',
@@ -193,7 +204,7 @@ def Kafka_Con():
 
             save_to_postgresql(payload)
             messages.append(payload['userId'])
-    retire(messages)
-    print("Kafka 연결4")
     # 소비자 종료
     consumer.close()
+    retire(messages)
+    print("Kafka 퇴사자 처리 완료")

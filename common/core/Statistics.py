@@ -220,7 +220,10 @@ def Minutely_statistics() :
         for user_data in service_user:
             classification = None  # 초기값 설정
             if user_data['essential5'].startswith('Office'):
-                classification = 'office_ver'
+                if user_data['essential5'].startswith('Office 365'):
+                    classification = 'office_ver_365'
+                else :
+                    classification = 'office_ver'
             else:
                 #print("aa")
                 classification = 'office_ver_mac'
@@ -613,9 +616,13 @@ def Daily_statistics() :
         for user_data in service_user:
             classification = None  # 초기값 설정
             if user_data['essential5'].startswith('Office'):
-                classification = 'office_ver'
+                if user_data['essential5'].startswith('Office 365'):
+                    classification = 'office_ver_365'
+                else:
+                    classification = 'office_ver'
             else:
                 classification = 'office_ver_mac'
+
             #classification = 'office_ver'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
             item = user_data['essential5']
             item_count = user_data['count']
