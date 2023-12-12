@@ -406,7 +406,8 @@ def Daily_statistics() :
 
         #user = Xfactor_Daily.objects.filter(user_date__date=now.date())
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         #service = Xfactor_Common.objects.filter(user_date__gte=start_of_today, user_date__lt=end_of_today)
         #user = Xfactor_Common_log.objects.exclude(computer_id='unconfirmed').filter(user_date__date=now.date())
         users = user.values('chassistype').annotate(count=Count('chassistype'))
@@ -423,7 +424,8 @@ def Daily_statistics() :
         print("os simple시작")
         #os_type OS종류
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         users = user.values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
             classification = 'os_simple'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -438,7 +440,8 @@ def Daily_statistics() :
 
         #win_ver 윈도우버전
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         users = user.filter(Q(os_simple='Windows')).values('os_total').annotate(count=Count('os_total'))
         for user_data in users:
             classification = 'win_os_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -453,7 +456,8 @@ def Daily_statistics() :
         print("대역별 시작")
         #subnet 대역별
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         users = user.values('subnet').annotate(count=Count('subnet'))
         inCount = 0
         outCount = 0
@@ -611,7 +615,8 @@ def Daily_statistics() :
         print("오피스 시작")
         #Office 버전별 통계
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         service_user = user.values('essential5').annotate(count=Count('essential5'))
         for user_data in service_user:
             classification = None  # 초기값 설정
@@ -634,7 +639,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
         print("CPU 시작")
         # cpu 사용량
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         services = user.values('t_cpu').annotate(count=Count('t_cpu'))
         for service_data in services:
@@ -649,7 +655,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
         print("os 6개 시작")
         # os버전별 자산 현황
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         users = user.filter(Q(os_simple='Windows'), Q(os_total__contains='Windows')).values('os_total', 'os_build').annotate(count=Count('os_simple')).order_by('-count')[:6]
         for user_data in users:
@@ -666,7 +673,10 @@ def Daily_statistics() :
             daily_statistics_log.save()
         print("업데이트 핫픽스 시작")
         # 업데이트 필요 통계
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
+
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
 
@@ -682,7 +692,9 @@ def Daily_statistics() :
         )
         daily_statistics_log.save()
         # 업데이트 필요 통계
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today).exclude(os_build__in=['' ,'unconfirmed'])
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today).exclude(os_build__in=['', 'unconfirmed'])
+
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.annotate(os_build_cast=Cast('os_build', BigIntegerField())).filter(os_simple='Windows', os_build_cast__lt=ver_current).exclude(os_total='unconfirmed').values('os_simple', 'os_build').annotate(count=Count('os_simple'))
@@ -698,7 +710,8 @@ def Daily_statistics() :
 
         print("구분값  시작")
         # online window
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
@@ -714,7 +727,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # online mac
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
         #user = Xfactor_Common_Cache.objects.filter(cache_date__gte=time)
         users = user.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
@@ -730,7 +744,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # online other
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        # user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user = Xfactor_Common.objects.filter(user_date__gte=start_of_today)
 
 
         #user = Xfactor_Daily.objects.filter(user_date__gte=time)
@@ -749,7 +764,9 @@ def Daily_statistics() :
 
         # total window
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=start_of_today)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -765,7 +782,8 @@ def Daily_statistics() :
 
         # total mac
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -781,7 +799,8 @@ def Daily_statistics() :
 
         # total other
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
 
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
@@ -798,7 +817,8 @@ def Daily_statistics() :
 
         # notebook total
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_chassis_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -812,7 +832,8 @@ def Daily_statistics() :
         daily_statistics_log.save()
 
         # desktop total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
@@ -829,7 +850,8 @@ def Daily_statistics() :
         #-------------------------------------
 
         # total window
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -844,7 +866,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # total mac
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -859,7 +882,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # total other
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.exclude(Q(chassistype='Notebook') | Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         for user_data in users:
@@ -874,7 +898,8 @@ def Daily_statistics() :
             daily_statistics_log.save()
 
         # notebook total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Notebook')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Notebook_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -888,7 +913,8 @@ def Daily_statistics() :
         daily_statistics_log.save()
 
         # desktop total
-        user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today, cache_date__gte=seven_days_ago)
+        user_cache = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         #user_cache = Xfactor_Common_Cache.objects.filter(user_date__gte=time).filter(cache_date__gte=seven_days_ago)
         users = user_cache.filter(Q(chassistype='Desktop')).values('os_simple').annotate(count=Count('os_simple'))
         classification = 'Desktop_cache_total'  # 분류 정보를 원하시는 텍스트로 변경해주세요.
@@ -904,7 +930,8 @@ def Daily_statistics() :
         print("필수보안프로그렘  시작")
         #보안프로그램 개수
         count_list = []
-        user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=seven_days_ago)
+        #user = Xfactor_Common_Cache.objects.filter(user_date__gte=start_of_today).filter(cache_date__gte=seven_days_ago)
+        user = Xfactor_Common.objects.filter(user_date__gte=seven_days_ago)
         security_program = ['cososys', 'symantec', 'cbr', 'cbc', 'mcafee']
         cososys_count = user.filter(security1='True ').count()
         symantec_count = user.filter(security2='True ').count()

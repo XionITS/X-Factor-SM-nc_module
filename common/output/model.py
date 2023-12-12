@@ -54,6 +54,8 @@ def plug_in_minutely(data):
             utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
             # 현재 시간대로 시간 변환
             now = utc_now.astimezone(local_tz)
+            index_now = now.strftime('%Y-%m-%d-%H')
+            #print(index_now)
             # for h in range(len(d[9])):
             #     hw_list.append(d[9][h]['text'])
             for s in range(len(d[14])):
@@ -101,7 +103,7 @@ def plug_in_minutely(data):
                 'hotfix_date': str(hotdate_list).replace("''", '').replace("' ", '').replace("'", '').replace(",", "<br>").replace('[', '').replace(']', ''),
                 'subnet' : d[22][0]['text'],
                 'essential1': d[23][0]['text'],
-                'essential2': d[24][0]['text'],
+                'essential2': index_now,
                 'essential3': d[25][0]['text'],
                 'essential4': d[26][0]['text'],
                 'essential5': d[27][0]['text'],
