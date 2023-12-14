@@ -128,20 +128,23 @@ def retire(messages):
     cursor = conn.cursor()
     # SQL 쿼리를 사용하여 데이터를 PostgreSQL에 저장
     # 데이터베이스에서 모든 userId 가져오기
-    cursor.execute('SELECT "userId" FROM common_xfactor_ncdb')
+    cursor.execute('SELECT "userId" FROM common_xfactor_ncdb WHERE "userName" NOT LIKE %s', ('%퇴사자%',))
     all_user_ids = cursor.fetchall()
 
 
     for user_id in all_user_ids:
         if user_id[0] not in messages:
-            print(user_id[0])
-            cursor.execute("""
-                    UPDATE common_xfactor_ncdb
-                    SET "userName" = "userName" || '(퇴사자)'
-                    WHERE "userId" = %s
-                """, (user_id[0],))
-            conn.commit()
-        else :
+            if user_id[0].lower().startswith('itsupport') or user_id[0].lower().startswith('erpdev'):
+                continue
+            else:
+                print(user_id[0])
+                cursor.execute("""
+                        UPDATE common_xfactor_ncdb
+                        SET "userName" = "userName" || '(퇴사자)'
+                        WHERE "userId" = %s
+                    """, (user_id[0],))
+                conn.commit()
+        else:
             continue
 
 
