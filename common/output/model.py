@@ -555,8 +555,13 @@ def plug_in_discover():
     local_tz = pytz.timezone('Asia/Seoul')
     today = timezone.now().astimezone(local_tz)
     discover_current = Daily_Statistics_log.objects.filter(item='discover_module').order_by('-statistics_collection_date').values_list('item_count', flat=True).first()
+
+    # 메일링 테스트
+    # discover_current =30
+
     today_150_ago = today - timedelta(days=discover_current)
     today_180_ago = today_150_ago - timedelta(days=30)
+
     # 전체 mac_address 구하기
     all_mac_addresses = set(Xfactor_Common.objects.filter(user_date__gte=today_150_ago).values_list('mac_address', flat=True))
 
@@ -567,10 +572,10 @@ def plug_in_discover():
     # manager_id = Mail_Id
     manager_id = 'smartwork@ncsoft.com'
     manager_pw = Mail_Pw
-
+    print(discover_asset)
     for d in discover_asset:
-        to_email = d.logged_name_id.email
-        # to_email = 'handlake2k@ncsoft.com'
+        # to_email = d.logged_name_id.email
+        to_email = 'handlake2k@ncsoft.com'
         user_id = d.logged_name_id.userId
         user_name = d.logged_name_id.userName
         mac_address = d.mac_address
@@ -583,7 +588,7 @@ def plug_in_discover():
         msg['Subject'] = "장기 미접속 자산 알람"
         days_since_first_date = (today - d.user_date).days
 
-        if days_since_first_date in (discover_current, discover_current+15 , discover_current+22 , discover_current+26, discover_current+29):
+        if days_since_first_date in (discover_current, discover_current + 15, discover_current + 22, discover_current + 26, discover_current + 29):
             try:
                 if mac_address in all_mac_addresses:
                     # print(f"이 자산은 중복됨 {mac_address}")
@@ -595,14 +600,20 @@ def plug_in_discover():
 
                 # body = f"{user_id}을 사용하는 컴퓨터가 미관리중입니다. 컴퓨터를 체크해 주시길 바랍니다."
                 body = ""
-                body += "<font face='Malgun Gothic' size='4'>안녕하세요.</font><br><br>"
+                body += "<font face='Malgun Gothic' size='4'>안녕하세요.</font><br>"
                 body += "<font face='Malgun Gothic' size='4'>"
-                body += f"{user_name}님의 장비가 장기간 네트워크 연결이 안되고 있어 안내메일 드립니다.<br>"
-                body += "180일동안 네트워크 연결이 없으면 (외부인터넷 포함) 장비등록이 풀려 재택근무에 사용을 할 수 없습니다.<br>"
-                body += "재등록 과정을 거쳐야하는 불편이 있을 수 있으니<br>"
-                body += "180일이 지나기전에 네트워크에 접속하여 기기 상태를 확인해주세요.<br><br>"
+                body += f"{user_name}님의 장비가 장기 미접속 자산으로 분류될 수 있어 안내메일 드립니다.<br><br>"
+                body += "*장기 미접속 자산이란?<br>"
+                body += "180일동안 Office 365의 어떠한 서비스도 이용하지 않으면 장기미접속 자산으로 분류됩니다.<br>"
+                body += "장기미접속 자산으로 분류되면 재택근무에 사용을 할 수 없습니다.<br>"
+                body += "재택근무에 사용하기 위해서는 기기 재등록이 필요하게 되므로<br>"
+                body += "180일이 지나기전에 o365 서비스에 접속해주세요.(아웃룩, 팀즈등)<br><br>"
+                body += "180일이 지나서 기기재등록이 필요하면 아래 Link를 참고해주세요.<br>"
+                body += "<기기등록 및 삭제방법> https://helpit.ncsoft.com/board/guide/36<br>"
+                body += "<br>"
 
                 # HTML 테이블 생성
+                body += "<장기미접속 PC정보>"
                 body += "<table border='1' cellpadding='5'>"
                 body += "<tr><th>항목</th><th>내용</th></tr>"
                 body += f"<tr><td>사용자계정</td><td>{user_id}</td></tr>"
@@ -623,7 +634,7 @@ def plug_in_discover():
                 server = smtplib.SMTP('172.20.0.126', 25)
                 server.sendmail(msg['From'], to_email, msg.as_string())
                 server.quit()
-                # print(f"메일이 성공적으로 발송되었습니다: {to_email}")
+                print(f"메일이 성공적으로 발송되었습니다: {to_email}")
 
             except Exception as e:
                 # print(f"메일 발송 실패 : {e}")
