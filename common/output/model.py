@@ -574,8 +574,8 @@ def plug_in_discover():
     manager_pw = Mail_Pw
     print(discover_asset)
     for d in discover_asset:
-        # to_email = d.logged_name_id.email
-        to_email = 'handlake2k@ncsoft.com'
+        to_email = d.logged_name_id.email
+        # to_email = 'handlake2k@ncsoft.com'
         user_id = d.logged_name_id.userId
         user_name = d.logged_name_id.userName
         mac_address = d.mac_address
