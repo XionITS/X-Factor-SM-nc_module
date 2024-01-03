@@ -397,7 +397,12 @@ def plug_in_daily(data):
 def cache():
     if Xfactor_Common.objects.exists():
         common_objects = Xfactor_Common.objects.all()
-
+        local_tz = pytz.timezone('Asia/Seoul')
+        # UTC 시간대를 사용하여 현재 시간을 얻음
+        utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+        # 현재 시간대로 시간 변환
+        now = utc_now.astimezone(local_tz)
+        index_now = now.strftime('%Y-%m-%d-%H')
         for common in common_objects:
             try:
                 # Xfactor_Common 객체와 동일한 필드 값을 가진 Xfactor_Common_Cache 객체를 생성합니다.
@@ -427,7 +432,7 @@ def cache():
                     subnet=common.subnet,
                     memo=common.memo,
                     essential1=common.essential1,
-                    essential2=common.essential2,
+                    essential2=index_now,
                     essential3=common.essential3,
                     essential4=common.essential4,
                     essential5=common.essential5,
